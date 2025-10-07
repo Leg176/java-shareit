@@ -19,7 +19,7 @@ public class ItemRequestController {
     private final RequestService requestService;
 
     @Autowired
-    public ItemRequestController( RequestService requestService) {
+    public ItemRequestController(RequestService requestService) {
         this.requestService = requestService;
     }
 

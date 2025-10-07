@@ -11,7 +11,7 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public Collection<User> findAll() {
         return new ArrayList<>(users.values());
-    };
+    }
 
     @Override
     public User create(User user) {
@@ -21,17 +21,17 @@ public class UserRepositoryImpl implements UserRepository {
         }
         users.put(user.getId(), user);
         return user;
-    };
+    }
 
     @Override
     public Optional<User> findByUserId(Long id) {
         return Optional.ofNullable(users.get(id));
-    };
+    }
 
     @Override
     public void delete(Long id) {
         users.remove(id);
-    };
+    }
 
     private long getNextId() {
         long currentMaxId = users.keySet()

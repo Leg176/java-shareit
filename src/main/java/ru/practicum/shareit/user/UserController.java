@@ -22,7 +22,7 @@ public class UserController {
 
     @Autowired
     public UserController(UserService userService) {
-        this.userService=userService;
+        this.userService = userService;
     }
 
     @GetMapping
@@ -36,7 +36,7 @@ public class UserController {
     }
 
     @PatchMapping("/{userId}")
-    public UserDto update( @PathVariable @Positive(message = "id должен быть больше 0") Long userId,
+    public UserDto update(@PathVariable @Positive(message = "id должен быть больше 0") Long userId,
                            @Valid @RequestBody @NotNull UpdateUserRequest request) {
         request.setId(userId);
         return userService.updateUser(request);

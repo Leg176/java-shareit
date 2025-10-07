@@ -101,11 +101,11 @@ public class BookingServiceImpl implements BookingService {
         }
     }
     private Booking validationBooking(Long id) {
-         Optional<Booking> optBooking = bookingRepository.findByBookingId(id);
-         if (optBooking.isEmpty()) {
-             throw new NotFoundException("Бронирование с id: " + id + " в базе отсутствует");
-         }
-         return optBooking.get();
+        Optional<Booking> optBooking = bookingRepository.findByBookingId(id);
+        if (optBooking.isEmpty()) {
+            throw new NotFoundException("Бронирование с id: " + id + " в базе отсутствует");
+        }
+        return optBooking.get();
     }
 }
 

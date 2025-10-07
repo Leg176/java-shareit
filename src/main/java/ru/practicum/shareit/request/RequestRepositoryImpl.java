@@ -23,7 +23,7 @@ public class RequestRepositoryImpl implements RequestRepository {
 
     @Override
     public Request create(Request request) {
-        if(request.getId() == null || request.getId() == 0) {
+        if (request.getId() == null || request.getId() == 0) {
             Long id = getNextId();
             request.setId(id);
         }

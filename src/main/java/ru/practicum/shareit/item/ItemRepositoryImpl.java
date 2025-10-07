@@ -23,7 +23,7 @@ public class ItemRepositoryImpl implements ItemRepository {
 
     @Override
     public Item create(Item item) {
-        if(item.getId() == null || item.getId() == 0) {
+        if (item.getId() == null || item.getId() == 0) {
             Long id = getNextId();
             item.setId(id);
         }

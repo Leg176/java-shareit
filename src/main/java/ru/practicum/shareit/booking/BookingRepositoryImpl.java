@@ -20,7 +20,7 @@ public class BookingRepositoryImpl implements BookingRepository {
     }
 
     public Booking create(Booking booking) {
-        if(booking.getId() == null || booking.getId() == 0) {
+        if (booking.getId() == null || booking.getId() == 0) {
             Long id = getNextId();
             booking.setId(id);
         }
