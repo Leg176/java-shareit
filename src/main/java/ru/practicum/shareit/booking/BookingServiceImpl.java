@@ -13,7 +13,6 @@ import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
-
 import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -100,6 +99,7 @@ public class BookingServiceImpl implements BookingService {
             throw new ValidationException("Вы не являетесь владельцем, доступ запрещён!");
         }
     }
+
     private Booking validationBooking(Long id) {
         Optional<Booking> optBooking = bookingRepository.findByBookingId(id);
         if (optBooking.isEmpty()) {
