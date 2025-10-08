@@ -1,28 +1,28 @@
 package ru.practicum.shareit.request;
 
 import org.springframework.stereotype.Repository;
-import ru.practicum.shareit.request.model.Request;
+import ru.practicum.shareit.request.model.ItemRequest;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Repository
-public class RequestRepositoryImpl implements RequestRepository {
-    private final Map<Long, Request> requests = new HashMap<>();
+public class ItemRequestRepositoryImpl implements ItemRequestRepository {
+    private final Map<Long, ItemRequest> requests = new HashMap<>();
 
     @Override
-    public Collection<Request> findAll() {
+    public Collection<ItemRequest> findAll() {
         return new ArrayList<>(requests.values());
     }
 
     @Override
-    public Collection<Request> getRequestsUser(Long ownerId) {
+    public Collection<ItemRequest> getRequestsUser(Long ownerId) {
         return requests.values().stream()
                 .filter(request -> request.getRequestor().getId().equals(ownerId))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Request create(Request request) {
+    public ItemRequest create(ItemRequest request) {
         if (request.getId() == null || request.getId() == 0) {
             Long id = getNextId();
             request.setId(id);
@@ -32,7 +32,7 @@ public class RequestRepositoryImpl implements RequestRepository {
     }
 
     @Override
-    public Optional<Request> findByRequestId(Long id) {
+    public Optional<ItemRequest> findByRequestId(Long id) {
         return Optional.ofNullable(requests.get(id));
     }
 

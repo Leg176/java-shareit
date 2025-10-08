@@ -1,17 +1,16 @@
 package ru.practicum.shareit.item.mapper;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Component;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.NewItemRequest;
-import ru.practicum.shareit.item.dto.UpdateItemRequest;
+import ru.practicum.shareit.item.dto.NewItemDto;
+import ru.practicum.shareit.item.dto.UpdateItemDto;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.request.model.Request;
+import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Component
 public class ItemMapper {
-    public static Item mapToItem(NewItemRequest request, User user) {
+    public Item mapToItem(NewItemDto request, User user) {
         if (request == null) {
             throw new IllegalArgumentException("Request не может быть пустым!");
         }
@@ -23,7 +22,7 @@ public class ItemMapper {
                 .build();
     }
 
-    public static Item mapToItem(NewItemRequest request, User user, Request itemRequest) {
+    public Item mapToItem(NewItemDto request, User user, ItemRequest itemRequest) {
         if (request == null) {
             throw new IllegalArgumentException("Request не может быть пустым!");
         }
@@ -36,7 +35,7 @@ public class ItemMapper {
                 .build();
     }
 
-    public static ItemDto mapToItemDto(Item item) {
+    public ItemDto mapToItemDto(Item item) {
         return ItemDto.builder()
                 .id(item.getId())
                 .name(item.getName())
@@ -47,7 +46,7 @@ public class ItemMapper {
                 .build();
     }
 
-    public static Item updateItemFields(Item item, UpdateItemRequest request) {
+    public Item updateItemFields(Item item, UpdateItemDto request) {
         if (request == null) {
             throw new IllegalArgumentException("Request не может быть пустым!");
         }

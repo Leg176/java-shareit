@@ -5,10 +5,12 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.request.dto.NewRequest;
-import ru.practicum.shareit.request.dto.RequestDto;
-import ru.practicum.shareit.request.dto.UpdateRequest;
+import ru.practicum.shareit.request.dto.NewItemRequestDto;
+import ru.practicum.shareit.request.dto.ItemRequestDto;
+import ru.practicum.shareit.request.dto.UpdateItemRequestDto;
 import java.util.Collection;
+
+import static ru.practicum.shareit.constants.HttpHeaders.X_SHARER_USER_ID;
 
 /**
  * TODO Sprint add-item-requests.
@@ -16,43 +18,40 @@ import java.util.Collection;
 @RestController
 @RequestMapping(path = "/requests")
 public class ItemRequestController {
-    private final RequestService requestService;
+    private final ItemRequestService itemRequestService;
 
     @Autowired
-    public ItemRequestController(RequestService requestService) {
-        this.requestService = requestService;
+    public ItemRequestController(ItemRequestService itemRequestService) {
+        this.itemRequestService = itemRequestService;
     }
 
     @GetMapping
-    public Collection<RequestDto> findAll(@RequestHeader(value = "X-Sharer-User-Id", required = false) Long userId) {
-        if (userId != null) {
-            return requestService.getRequestsByOwner(userId);
-        }
-        return requestService.getRequests();
+    public Collection<ItemRequestDto> findAll(@RequestHeader(X_SHARER_USER_ID) Long userId) {
+        return itemRequestService.getRequestsByOwner(userId);
     }
 
     @PostMapping
-    public RequestDto create(@RequestHeader("X-Sharer-User-Id") Long ownerId,
-                          @Valid @RequestBody @NotNull NewRequest itemRequest) {
-        return requestService.addNewRequest(itemRequest, ownerId);
+    public ItemRequestDto create(@RequestHeader(X_SHARER_USER_ID) Long ownerId,
+                                 @Valid @RequestBody @NotNull NewItemRequestDto itemRequest) {
+        return itemRequestService.addNewRequest(itemRequest, ownerId);
     }
 
     @PatchMapping("/{id}")
-    public RequestDto update(@Valid @RequestBody @NotNull UpdateRequest request,
-                          @RequestHeader("X-Sharer-User-Id") Long ownerId,
-                          @PathVariable @Positive(message = "id должен быть больше 0") Long id) {
+    public ItemRequestDto update(@Valid @RequestBody @NotNull UpdateItemRequestDto request,
+                                 @RequestHeader(X_SHARER_USER_ID) Long ownerId,
+                                 @PathVariable @Positive(message = "id должен быть больше 0") Long id) {
         request.setId(id);
-        return requestService.updateRequest(request, ownerId);
+        return itemRequestService.updateRequest(request, ownerId);
     }
 
     @GetMapping("/{id}")
-    public RequestDto getRequest(@PathVariable @Positive(message = "id должен быть больше 0") Long id) {
-        return requestService.getRequestById(id);
+    public ItemRequestDto getRequest(@PathVariable @Positive(message = "id должен быть больше 0") Long id) {
+        return itemRequestService.getRequestById(id);
     }
 
     @DeleteMapping("/{id}")
     public void removeRequest(@PathVariable @Positive(message = "id должен быть больше 0") Long id,
-                           @RequestHeader("X-Sharer-User-Id") Long ownerId) {
-        requestService.deleteRequest(id, ownerId);
+                           @RequestHeader(X_SHARER_USER_ID) Long ownerId) {
+        itemRequestService.deleteRequest(id, ownerId);
     }
 }

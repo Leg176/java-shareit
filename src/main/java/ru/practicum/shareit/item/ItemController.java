@@ -6,10 +6,11 @@ import jakarta.validation.constraints.Positive;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.NewItemRequest;
-import ru.practicum.shareit.item.dto.UpdateItemRequest;
+import ru.practicum.shareit.item.dto.NewItemDto;
+import ru.practicum.shareit.item.dto.UpdateItemDto;
 import java.util.Collection;
 import java.util.List;
+import static ru.practicum.shareit.constants.HttpHeaders.X_SHARER_USER_ID;
 
 /**
  * TODO Sprint add-controllers.
@@ -25,22 +26,19 @@ public class ItemController {
     }
 
     @GetMapping
-    public Collection<ItemDto> findAll(@RequestHeader(value = "X-Sharer-User-Id", required = false) Long userId) {
-        if (userId != null) {
-            return itemService.getItemsByOwner(userId);
-        }
-        return itemService.getItems();
+    public Collection<ItemDto> findAll(@RequestHeader(X_SHARER_USER_ID) Long userId) {
+        return itemService.getItemsByOwner(userId);
     }
 
     @PostMapping
-    public ItemDto create(@RequestHeader("X-Sharer-User-Id") Long ownerId,
-                          @Valid @RequestBody @NotNull NewItemRequest itemRequest) {
+    public ItemDto create(@RequestHeader(X_SHARER_USER_ID) Long ownerId,
+                          @Valid @RequestBody @NotNull NewItemDto itemRequest) {
         return itemService.addNewItem(itemRequest, ownerId);
     }
 
     @PatchMapping("/{id}")
-    public ItemDto update(@Valid @RequestBody @NotNull UpdateItemRequest request,
-                          @RequestHeader("X-Sharer-User-Id") Long ownerId,
+    public ItemDto update(@Valid @RequestBody @NotNull UpdateItemDto request,
+                          @RequestHeader(X_SHARER_USER_ID) Long ownerId,
                           @PathVariable @Positive(message = "id должен быть больше 0") Long id) {
         request.setId(id);
         request.setOwner(ownerId);
@@ -54,7 +52,7 @@ public class ItemController {
 
     @DeleteMapping("/{id}")
     public void removeItem(@PathVariable @Positive(message = "id должен быть больше 0") Long id,
-                           @RequestHeader("X-Sharer-User-Id") Long ownerId) {
+                           @RequestHeader(X_SHARER_USER_ID) Long ownerId) {
         itemService.deleteItem(id, ownerId);
     }
 

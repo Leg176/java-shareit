@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdateUserRequest {
+public class UpdateUserDto {
 
     @Min(value = 1, message = "Id не может быть меньше 1.")
     private Long id;

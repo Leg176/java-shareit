@@ -10,6 +10,8 @@ import ru.practicum.shareit.booking.dto.NewBookingRequest;
 import ru.practicum.shareit.booking.dto.UpdateBookingRequest;
 import java.util.Collection;
 
+import static ru.practicum.shareit.constants.HttpHeaders.X_SHARER_USER_ID;
+
 /**
  * TODO Sprint add-bookings.
  */
@@ -24,22 +26,19 @@ public class BookingController {
     }
 
     @GetMapping
-    public Collection<BookingDto> findAll(@RequestHeader(value = "X-Sharer-User-Id", required = false) Long userId) {
-        if (userId != null) {
-            return bookingService.getBookingsByOwner(userId);
-        }
-        return bookingService.getBookings();
+    public Collection<BookingDto> findAll(@RequestHeader(X_SHARER_USER_ID) Long userId) {
+        return bookingService.getBookingsByOwner(userId);
     }
 
     @PostMapping
-    public BookingDto create(@RequestHeader("X-Sharer-User-Id") Long ownerId,
+    public BookingDto create(@RequestHeader(X_SHARER_USER_ID) Long ownerId,
                           @Valid @RequestBody @NotNull NewBookingRequest bookingRequest) {
         return bookingService.addNewBooking(bookingRequest, ownerId);
     }
 
     @PatchMapping("/{id}")
     public BookingDto update(@Valid @RequestBody @NotNull UpdateBookingRequest request,
-                          @RequestHeader("X-Sharer-User-Id") Long ownerId,
+                          @RequestHeader(X_SHARER_USER_ID) Long ownerId,
                           @PathVariable @Positive(message = "id должен быть больше 0") Long id) {
         request.setId(id);
         return bookingService.updateBooking(request, ownerId);
@@ -52,7 +51,7 @@ public class BookingController {
 
     @DeleteMapping("/{id}")
     public void removeBooking(@PathVariable @Positive(message = "id должен быть больше 0") Long id,
-                           @RequestHeader("X-Sharer-User-Id") Long ownerId) {
+                           @RequestHeader(X_SHARER_USER_ID) Long ownerId) {
         bookingService.deleteBooking(id, ownerId);
     }
 }

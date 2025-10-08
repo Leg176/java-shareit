@@ -1,33 +1,32 @@
 package ru.practicum.shareit.request.mapper;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import ru.practicum.shareit.request.dto.NewRequest;
-import ru.practicum.shareit.request.dto.RequestDto;
-import ru.practicum.shareit.request.dto.UpdateRequest;
-import ru.practicum.shareit.request.model.Request;
+import org.springframework.stereotype.Component;
+import ru.practicum.shareit.request.dto.NewItemRequestDto;
+import ru.practicum.shareit.request.dto.ItemRequestDto;
+import ru.practicum.shareit.request.dto.UpdateItemRequestDto;
+import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDateTime;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class RequestMapper {
-    public static Request mapToRequest(NewRequest request, User requestor) {
+@Component
+public class ItemRequestMapper {
+    public ItemRequest mapToRequest(NewItemRequestDto request, User requestor) {
         if (request == null) {
             throw new IllegalArgumentException("Request не может быть пустым!");
         }
         if (requestor == null) {
             throw new IllegalArgumentException("User (requestor) не может быть null");
         }
-        return Request.builder()
+        return ItemRequest.builder()
                 .description(request.getDescription())
                 .requestor(requestor)
                 .timeCreated(LocalDateTime.now())
                 .build();
     }
 
-    public static RequestDto mapToRequestDto(Request itemRequest) {
-        return RequestDto.builder()
+    public ItemRequestDto mapToRequestDto(ItemRequest itemRequest) {
+        return ItemRequestDto.builder()
                 .id(itemRequest.getId())
                 .description(itemRequest.getDescription())
                 .requestor(itemRequest.getRequestor().getName())
@@ -35,7 +34,7 @@ public class RequestMapper {
                 .build();
     }
 
-    public static Request updateRequestFields(Request request, UpdateRequest updateRequest) {
+    public ItemRequest updateRequestFields(ItemRequest request, UpdateItemRequestDto updateRequest) {
         if (updateRequest == null) {
             throw new IllegalArgumentException("UpdateRequest не может быть пустым!");
         }
