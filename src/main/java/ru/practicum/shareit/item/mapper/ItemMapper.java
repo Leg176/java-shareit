@@ -1,6 +1,8 @@
 package ru.practicum.shareit.item.mapper;
 
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.NewItemDto;
 import ru.practicum.shareit.item.dto.UpdateItemDto;
@@ -8,48 +10,27 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
-@Component
-public class ItemMapper {
-    public Item mapToItem(NewItemDto request, User user) {
-        if (request == null) {
-            throw new IllegalArgumentException("Request не может быть пустым!");
-        }
-        return Item.builder()
-                .name(request.getName())
-                .description(request.getDescription())
-                .owner(user)
-                .available(request.getAvailable())
-                .build();
-    }
+@Mapper(componentModel = "spring")
+public interface ItemMapper {
 
-    public Item mapToItem(NewItemDto request, User user, ItemRequest itemRequest) {
-        if (request == null) {
-            throw new IllegalArgumentException("Request не может быть пустым!");
-        }
-        return Item.builder()
-                .name(request.getName())
-                .description(request.getDescription())
-                .owner(user)
-                .available(request.getAvailable())
-                .request(itemRequest)
-                .build();
-    }
+    @Mapping(target = "owner", source = "owner.name")
+    @Mapping(target = "requestId", source = "request.id")
+    ItemDto mapToItemDto(Item item);
 
-    public ItemDto mapToItemDto(Item item) {
-        return ItemDto.builder()
-                .id(item.getId())
-                .name(item.getName())
-                .description(item.getDescription())
-                .available(item.getAvailable())
-                .owner(item.getOwner().getName())
-                .requestId(item.getRequest() != null ? item.getRequest().getId() : null)
-                .build();
-    }
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "request", ignore = true)
+    @Mapping(target = "name", source = "newItemDto.name")
+    @Mapping(target = "owner", source = "user")
+    Item mapToItem(NewItemDto newItemDto, User user);
 
-    public Item updateItemFields(Item item, UpdateItemDto request) {
-        if (request == null) {
-            throw new IllegalArgumentException("Request не может быть пустым!");
-        }
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "name", source = "newItemDto.name")
+    @Mapping(target = "description", source = "newItemDto.description")
+    @Mapping(target = "owner", source = "user")
+    @Mapping(target = "request", source = "itemRequest")
+    Item mapToItem(NewItemDto newItemDto, User user, ItemRequest itemRequest);
+
+    default Item updateItemFields(@MappingTarget Item item, UpdateItemDto request) {
         if (request.hasName()) {
             item.setName(request.getName());
         }
