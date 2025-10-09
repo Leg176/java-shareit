@@ -36,13 +36,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto updateUser(UpdateUserDto request) {
-        if (request.getEmail() != null &&
-                !request.getEmail().isBlank()) {
+        if (userMapper.isNotBlank(request.getEmail())) {
             isContainsEmail(request.getEmail(), request.getId());
         }
         Long id = request.getId();
         User user = findByIdUser(id);
-        userMapper.updateUserFields(user, request);
+        userMapper.updateUserFields(request, user);
         repository.create(user);
         return userMapper.mapToUserDto(user);
     }

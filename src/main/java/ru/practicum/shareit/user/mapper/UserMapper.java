@@ -1,41 +1,37 @@
 package ru.practicum.shareit.user.mapper;
 
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import ru.practicum.shareit.user.dto.NewUserDto;
 import ru.practicum.shareit.user.dto.UpdateUserDto;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 
-@Component
-public class UserMapper {
-    public User mapToUser(NewUserDto request) {
-        if (request == null) {
-            throw new IllegalArgumentException("Request не может быть пустым!");
-        }
-        return User.builder()
-        .name(request.getName())
-        .email(request.getEmail())
-        .build();
-    }
+@Mapper(componentModel = "spring")
+public interface UserMapper {
 
-    public UserDto mapToUserDto(User user) {
-        return UserDto.builder()
-                .id(user.getId())
-                .name(user.getName())
-                .email(user.getEmail())
-                .build();
-    }
+    UserDto mapToUserDto(User user);
 
-    public User updateUserFields(User user, UpdateUserDto request) {
-        if (request == null) {
-            throw new IllegalArgumentException("Request не может быть пустым!");
+    @Mapping(target = "id", ignore = true)
+    User mapToUser(NewUserDto newUserDto);
+
+    default User updateUserFields(UpdateUserDto updateUserDto, @MappingTarget User user) {
+        if (updateUserDto == null) {
+            return user;
         }
-        if (request.hasName()) {
-            user.setName(request.getName());
+
+        if (isNotBlank(updateUserDto.getName())) {
+            user.setName(updateUserDto.getName().trim());
         }
-        if (request.hasEmail()) {
-            user.setEmail(request.getEmail());
+
+        if (isNotBlank(updateUserDto.getEmail())) {
+            user.setEmail(updateUserDto.getEmail().trim());
         }
         return user;
+    }
+
+    default boolean isNotBlank(String value) {
+        return value != null && !value.isEmpty();
     }
 }
