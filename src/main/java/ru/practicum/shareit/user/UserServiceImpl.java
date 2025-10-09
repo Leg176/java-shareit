@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto updateUser(UpdateUserDto request) {
-        if (userMapper.isNotBlank(request.getEmail())) {
+        if (request.hasEmail()) {
             isContainsEmail(request.getEmail(), request.getId());
         }
         Long id = request.getId();

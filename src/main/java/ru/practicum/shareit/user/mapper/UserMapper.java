@@ -21,17 +21,13 @@ public interface UserMapper {
             return user;
         }
 
-        if (isNotBlank(updateUserDto.getName())) {
+        if (updateUserDto.hasName()) {
             user.setName(updateUserDto.getName().trim());
         }
 
-        if (isNotBlank(updateUserDto.getEmail())) {
+        if (updateUserDto.hasEmail()) {
             user.setEmail(updateUserDto.getEmail().trim());
         }
         return user;
-    }
-
-    default boolean isNotBlank(String value) {
-        return value != null && !value.isEmpty();
     }
 }
