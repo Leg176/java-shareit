@@ -2,6 +2,7 @@ package ru.practicum.shareit.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.error.exception.NotFoundException;
 import ru.practicum.shareit.error.exception.ValidationException;
 import ru.practicum.shareit.user.dto.NewUserDto;
@@ -9,32 +10,37 @@ import ru.practicum.shareit.user.dto.UpdateUserDto;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
-import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
     private final UserRepository repository;
     private final UserMapper userMapper;
 
     @Override
-    public Collection<UserDto> getUsers() {
-        return repository.findAll().stream()
+    @Transactional(readOnly = true)
+    public List<UserDto> getAllUsers() {
+        List<User> users = repository.findAll();
+        return users.stream()
                 .map(userMapper::mapToUserDto)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public UserDto addNewUser(NewUserDto request) {
+    @Transactional
+    public UserDto saveUser(NewUserDto request) {
         isContainsEmail(request.getEmail(), null);
         User user = userMapper.mapToUser(request);
-        repository.create(user);
-        return userMapper.mapToUserDto(repository.create(user));
+        repository.save(user);
+        return userMapper.mapToUserDto(user);
     }
 
     @Override
+    @Transactional
     public UserDto updateUser(UpdateUserDto request) {
         if (request.hasEmail()) {
             isContainsEmail(request.getEmail(), request.getId());
@@ -42,34 +48,38 @@ public class UserServiceImpl implements UserService {
         Long id = request.getId();
         User user = findByIdUser(id);
         userMapper.updateUserFields(request, user);
-        repository.create(user);
+        repository.save(user);
         return userMapper.mapToUserDto(user);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserDto getUserById(Long id) {
         User user = findByIdUser(id);
         return userMapper.mapToUserDto(user);
     }
 
     @Override
+    @Transactional
     public void deleteUser(Long id) {
-        findByIdUser(id);
-        repository.delete(id);
+        User user = findByIdUser(id);
+        repository.delete(user);
     }
 
     private void isContainsEmail(String newEmail, Long id) {
-        boolean emailExists = repository.findAll().stream()
-                .filter(user -> id == null || !user.getId().equals(id))
-                .map(User::getEmail)
-                .anyMatch(email -> email.equals(newEmail));
+        boolean emailExists;
+        if (id == null) {
+            emailExists = repository.existsByEmail(newEmail);
+        } else {
+            emailExists = repository.existsByEmailAndIdNot(newEmail, id);
+        }
         if (emailExists) {
             throw new ValidationException("Пользователь с email: " + newEmail + " существует");
         }
     }
 
     private User findByIdUser(Long id) {
-        Optional<User> optUser = repository.findByUserId(id);
+        Optional<User> optUser = repository.findById(id);
         if (optUser.isEmpty()) {
             throw new NotFoundException("Пользователь с id: " + id + " в базе отсутствует");
         }

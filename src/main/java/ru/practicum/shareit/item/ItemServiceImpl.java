@@ -2,6 +2,7 @@ package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.error.exception.NotFoundException;
 import ru.practicum.shareit.error.exception.ValidationException;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -32,11 +33,13 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public  Collection<ItemDto> getItemsByOwner(Long ownerId) {
-        findByIdUser(ownerId);
-        return itemRepository.getItemsUser(ownerId).stream()
-                .map(itemMapper::mapToItemDto)
-                .collect(Collectors.toList());
+    @Transactional
+    public Collection<ItemDto> getItemsByOwner(Long ownerId) {
+        if (!userRepository.existsById(ownerId)) {
+            throw new NotFoundException("Пользователь с id: " + ownerId + " не найден");
+        }
+        List<Item> items = itemRepository.findByOwnerId(ownerId);
+        return items.stream().map(itemMapper::mapToItemDto).collect(Collectors.toList());
     }
 
     @Override
