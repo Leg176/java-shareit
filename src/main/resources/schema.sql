@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS items (
               description VARCHAR(2000) NOT NULL,
               is_available Boolean,
               owner_id BIGINT NOT NULL,
-              request_id BIGINT NOT NULL,
+              request_id BIGINT,
               CONSTRAINT fk_items_to_users FOREIGN KEY(owner_id) REFERENCES users(id),
               CONSTRAINT fk_items_to_requests FOREIGN KEY(request_id) REFERENCES requests(id),
               UNIQUE(name)
