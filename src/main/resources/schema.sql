@@ -1,3 +1,9 @@
+DROP TABLE IF EXISTS users CASCADE;
+DROP TABLE IF EXISTS requests CASCADE;
+DROP TABLE IF EXISTS items CASCADE;
+DROP TABLE IF EXISTS bookings CASCADE;
+DROP TABLE IF EXISTS comments CASCADE;
+
 CREATE TABLE IF NOT EXISTS users (
               id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
               name VARCHAR(100) NOT NULL,
@@ -20,8 +26,7 @@ CREATE TABLE IF NOT EXISTS items (
               owner_id BIGINT NOT NULL,
               request_id BIGINT,
               CONSTRAINT fk_items_to_users FOREIGN KEY(owner_id) REFERENCES users(id),
-              CONSTRAINT fk_items_to_requests FOREIGN KEY(request_id) REFERENCES requests(id),
-              UNIQUE(name)
+              CONSTRAINT fk_items_to_requests FOREIGN KEY(request_id) REFERENCES requests(id)
             );
 
 CREATE TABLE IF NOT EXISTS bookings (

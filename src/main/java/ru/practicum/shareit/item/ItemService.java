@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item;
 
+import ru.practicum.shareit.item.dto.ItemBookingDateParametersDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.NewItemDto;
 import ru.practicum.shareit.item.dto.UpdateItemDto;
@@ -20,4 +21,6 @@ public interface ItemService {
     void deleteItem(Long id, Long ownerId);
 
     List<ItemDto> searchItems(String text);
+
+    List<ItemBookingDateParametersDto> getUsersItemsWithBookingDates(Long ownerId);
 }

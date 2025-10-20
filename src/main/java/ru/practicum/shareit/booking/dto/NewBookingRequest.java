@@ -1,16 +1,13 @@
 package ru.practicum.shareit.booking.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.validation.constraints.Future;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import java.time.LocalDate;
+import jakarta.validation.constraints.*;
+import lombok.*;
 
-@Data
+import java.time.LocalDateTime;
+
+@Setter
+@Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,12 +16,16 @@ public class NewBookingRequest {
     @Min(value = 1, message = "Id не может быть меньше 1.")
     private Long itemId;
     @NotNull
-    @Future(message = "Дата должна быть в будущем")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private LocalDate start;
+    @FutureOrPresent(message = "Дата должна быть в будущем или настоящем")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private LocalDateTime start;
     @NotNull
     @Future(message = "Дата должна быть в будущем")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private LocalDate end;
-    private String status;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private LocalDateTime end;
+
+    @AssertTrue(message = "Дата окончания должна быть после даты начала")
+    public boolean isEndAfterStart() {
+        return start != null && end != null && end.isAfter(start);
+    }
 }

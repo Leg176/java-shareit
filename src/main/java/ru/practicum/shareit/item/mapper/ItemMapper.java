@@ -3,6 +3,7 @@ package ru.practicum.shareit.item.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import ru.practicum.shareit.item.dto.ItemBookingDateParametersDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.NewItemDto;
 import ru.practicum.shareit.item.dto.UpdateItemDto;
@@ -10,12 +11,21 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
+import java.time.LocalDateTime;
+
 @Mapper(componentModel = "spring")
 public interface ItemMapper {
 
     @Mapping(target = "owner", source = "owner.name")
     @Mapping(target = "requestId", source = "request.id")
     ItemDto mapToItemDto(Item item);
+
+    @Mapping(target = "owner", source = "item.owner.name")
+    @Mapping(target = "requestId", source = "item.request.id")
+    @Mapping(target = "lastBookingEnd", source = "lastBookingEnd")
+    @Mapping(target = "nextBookingStart", source = "nextBookingStart")
+    ItemBookingDateParametersDto mapToItemBookingDateParametersDto(Item item, LocalDateTime lastBookingEnd,
+                                                                   LocalDateTime nextBookingStart);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "request", ignore = true)

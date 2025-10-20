@@ -3,19 +3,18 @@ package ru.practicum.shareit.booking.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import java.time.LocalDate;
+import lombok.*;
+import ru.practicum.shareit.booking.model.BookingStatus;
+
+import java.time.LocalDateTime;
 
 /**
  * TODO Sprint add-bookings.
  */
-@Data
+@Setter
+@Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -23,17 +22,16 @@ import java.time.LocalDate;
 public class BookingDto {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
+    @NotBlank
+    private BookingItemDto item;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private LocalDateTime start;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private LocalDateTime end;
+    @NotBlank
+    private BookingBookerDto booker;
     @NotNull
-    @Min(value = 1, message = "Id не может быть меньше 1.")
-    private Long itemId;
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private LocalDate start;
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private LocalDate end;
-    @NotBlank
-    private String booker;
-    @NotBlank
-    private String status;
+    private BookingStatus status;
 }

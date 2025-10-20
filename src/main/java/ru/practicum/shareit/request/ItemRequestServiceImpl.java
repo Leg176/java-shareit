@@ -69,7 +69,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     private User findByIdUser(Long id) {
-        Optional<User> optUser = userRepository.findByUserId(id);
+        Optional<User> optUser = userRepository.findById(id);
         if (optUser.isEmpty()) {
             throw new NotFoundException("Пользователь с id: " + id + " в базе отсутствует");
         }

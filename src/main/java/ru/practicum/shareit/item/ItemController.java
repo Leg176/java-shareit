@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.item.dto.ItemBookingDateParametersDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.NewItemDto;
 import ru.practicum.shareit.item.dto.UpdateItemDto;
@@ -26,8 +27,9 @@ public class ItemController {
     }
 
     @GetMapping
-    public Collection<ItemDto> findAll(@RequestHeader(X_SHARER_USER_ID) Long userId) {
-        return itemService.getItemsByOwner(userId);
+    public Collection<ItemBookingDateParametersDto> getUsersItemsWithBookingDates(
+            @RequestHeader(X_SHARER_USER_ID) Long userId) {
+        return itemService.getUsersItemsWithBookingDates(userId);
     }
 
     @PostMapping

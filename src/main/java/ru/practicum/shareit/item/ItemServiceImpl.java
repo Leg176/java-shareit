@@ -3,8 +3,12 @@ package ru.practicum.shareit.item;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.booking.BookingRepository;
+import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.error.exception.NotFoundException;
 import ru.practicum.shareit.error.exception.ValidationException;
+import ru.practicum.shareit.item.dto.ItemBookingDateParametersDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.NewItemDto;
 import ru.practicum.shareit.item.dto.UpdateItemDto;
@@ -24,6 +28,7 @@ import java.util.stream.Collectors;
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
+    private final BookingRepository bookingRepository;
     private final ItemMapper itemMapper;
 
     @Override
@@ -88,6 +93,30 @@ public class ItemServiceImpl implements ItemService {
         String searchText = text.trim().toLowerCase();
         return itemRepository.searchAvailableItems(searchText).stream()
                 .map(itemMapper::mapToItemDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ItemBookingDateParametersDto> getUsersItemsWithBookingDates(Long ownerId) {
+        // Получаем все вещи пользователя
+        List<Item> usersItems = itemRepository.findByOwnerId(ownerId);
+
+        return usersItems.stream()
+                .map(item -> {
+                    // Для каждой вещи выполняем запросы в репозиторий бронирований
+                    Optional<Booking> lastBooking = bookingRepository.findLastBookingForItem(item.getId(),
+                            BookingStatus.APPROVED);
+                    Optional<Booking> nextBooking = bookingRepository.findNextBookingForItem(item.getId(),
+                            BookingStatus.APPROVED, BookingStatus.WAITING);
+
+                    // Вручную добавляем данные в DTO
+                    return itemMapper.mapToItemBookingDateParametersDto(
+                            item,
+                            lastBooking.map(Booking::getEnd).orElse(null),
+                            nextBooking.map(Booking::getStart).orElse(null)
+                    );
+                })
                 .collect(Collectors.toList());
     }
 
