@@ -20,7 +20,5 @@ public interface ItemService {
 
     List<ItemDto> searchItems(String text);
 
-    List<ItemBookingDateParametersDto> getUsersItemsWithBookingDates(Long ownerId);
-
     CommentDto addNewComment(Long ownerId, Long itemId, NewCommentRequest request);
 }

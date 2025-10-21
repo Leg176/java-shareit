@@ -8,8 +8,8 @@ import ru.practicum.shareit.item.dto.NewCommentRequest;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
-
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Component
 public class CommentMapper {
@@ -38,5 +38,9 @@ public class CommentMapper {
                 .authorName(comment.getAuthor().getName())
                 .created(comment.getCreated())
                 .build();
+    }
+
+    public List<CommentDto> mapToCommentDtoList(List<Comment> comments) {
+        return comments.stream().map(this::mapToCommentDto).toList();
     }
 }

@@ -25,9 +25,9 @@ public class ItemController {
     }
 
     @GetMapping
-    public Collection<ItemBookingDateParametersDto> getUsersItemsWithBookingDates(
+    public Collection<ItemDto> getItemsByOwner(
             @RequestHeader(X_SHARER_USER_ID) Long userId) {
-        return itemService.getUsersItemsWithBookingDates(userId);
+        return itemService.getItemsByOwner(userId);
     }
 
     @GetMapping("/{itemId}")

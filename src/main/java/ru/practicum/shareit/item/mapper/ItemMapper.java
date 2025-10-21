@@ -4,15 +4,11 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import ru.practicum.shareit.booking.dto.BookingTimeDto;
-import ru.practicum.shareit.item.dto.ItemBookingDateParametersDto;
-import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.NewItemDto;
-import ru.practicum.shareit.item.dto.UpdateItemDto;
+import ru.practicum.shareit.item.dto.*;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
-
-import java.time.LocalDateTime;
+import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface ItemMapper {
@@ -21,13 +17,34 @@ public interface ItemMapper {
     @Mapping(target = "requestId", source = "request.id")
     ItemDto mapToItemDto(Item item);
 
+    @Mapping(target = "owner", source = "item.owner.name")
+    @Mapping(target = "requestId", source = "item.request.id")
+    @Mapping(target = "comments", source = "comments")
+    ItemDto mapToItemAndCommentsDto(Item item, List<CommentDto> comments);
+
+
     @Mapping(target = "id", source = "item.id")
+    @Mapping(target = "name", source = "item.name")
+    @Mapping(target = "description", source = "item.description")
+    @Mapping(target = "available", source = "item.available")
     @Mapping(target = "owner", source = "item.owner.name")
     @Mapping(target = "requestId", source = "item.request.id")
     @Mapping(target = "lastBooking", source = "lastBooking")
     @Mapping(target = "nextBooking", source = "nextBooking")
-    ItemBookingDateParametersDto mapToItemBookingDateParametersDto(Item item, BookingTimeDto lastBooking,
-                                                                   BookingTimeDto nextBooking);
+    @Mapping(target = "comments", source = "comments")
+    ItemBookingDateParametersDto mapToItemBookingDateParametersDto(Item item,
+                                                                   BookingTimeDto lastBooking,
+                                                                   BookingTimeDto nextBooking,
+                                                                   List<CommentDto> comments);
+
+    @Mapping(target = "id", source = "item.id")
+    @Mapping(target = "name", source = "item.name")
+    @Mapping(target = "description", source = "item.description")
+    @Mapping(target = "available", source = "item.available")
+    @Mapping(target = "owner", source = "item.owner.name")
+    @Mapping(target = "requestId", source = "item.request.id")
+    @Mapping(target = "comments", source = "commentDto")
+    ItemBookingDateParametersDto mapToItemParametersDto(Item item, List<CommentDto> commentDto);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "request", ignore = true)

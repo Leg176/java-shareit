@@ -17,10 +17,7 @@ import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -50,7 +47,22 @@ public class ItemServiceImpl implements ItemService {
             throw new NotFoundException("Пользователь с id: " + ownerId + " не найден");
         }
         List<Item> items = itemRepository.findByOwnerId(ownerId);
-        return items.stream().map(itemMapper::mapToItemDto).collect(Collectors.toList());
+        List<Long> itemIds = items.stream().map(Item::getId).collect(Collectors.toList());
+        List<Comment> comments = commentRepository.findByItemIdIn(itemIds);
+
+        Map<Long, List<Comment>> commentsByItemId = comments.stream()
+                .collect(Collectors.groupingBy(comment -> comment.getItem().getId()));
+
+        return items.stream()
+                .map(item -> {
+                    List<Comment> itemComments = commentsByItemId.getOrDefault(item.getId(), Collections.emptyList());
+                    List<CommentDto> commentDto = commentMapper.mapToCommentDtoList(itemComments);
+                    return itemMapper.mapToItemAndCommentsDto(
+                            item,
+                            commentDto
+                    );
+                })
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -66,14 +78,21 @@ public class ItemServiceImpl implements ItemService {
     @Transactional(readOnly = true)
     public ItemBookingDateParametersDto getItemById(Long itemId, Long ownerId) {
         Item item = findByIdItem(itemId);
+        List<Comment> comments = commentRepository.findByItemId(itemId);
+        List<CommentDto> commentsDto = comments.stream()
+                .map(commentMapper::mapToCommentDto)
+                .toList();
+        if (item.getOwner().getId().equals(ownerId)) {
         Optional<Booking> lastBooking = bookingRepository.findLastBookingForItem(item.getId(),
                 BookingStatus.APPROVED);
         Optional<Booking> nextBooking = bookingRepository.findNextBookingForItem(item.getId(),
                 BookingStatus.APPROVED, BookingStatus.WAITING);
-
         return itemMapper.mapToItemBookingDateParametersDto(item,
                 lastBooking.map(bookingMapper::mapToBookingTimeDto).orElse(null),
-                nextBooking.map(bookingMapper::mapToBookingTimeDto).orElse(null));
+                nextBooking.map(bookingMapper::mapToBookingTimeDto).orElse(null),
+                commentsDto);
+        }
+            return itemMapper.mapToItemParametersDto(item, commentsDto);
     }
 
     @Override
@@ -104,30 +123,6 @@ public class ItemServiceImpl implements ItemService {
         String searchText = text.trim().toLowerCase();
         return itemRepository.searchAvailableItems(searchText).stream()
                 .map(itemMapper::mapToItemDto)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<ItemBookingDateParametersDto> getUsersItemsWithBookingDates(Long ownerId) {
-        // Получаем все вещи пользователя
-        List<Item> usersItems = itemRepository.findByOwnerId(ownerId);
-
-        return usersItems.stream()
-                .map(item -> {
-                    // Для каждой вещи выполняем запросы в репозиторий бронирований
-                    Optional<Booking> lastBooking = bookingRepository.findLastBookingForItem(item.getId(),
-                            BookingStatus.APPROVED);
-                    Optional<Booking> nextBooking = bookingRepository.findNextBookingForItem(item.getId(),
-                            BookingStatus.APPROVED, BookingStatus.WAITING);
-
-                    // Вручную добавляем данные в DTO
-                    return itemMapper.mapToItemBookingDateParametersDto(
-                            item,
-                            lastBooking.map(bookingMapper::mapToBookingTimeDto).orElse(null),
-                            nextBooking.map(bookingMapper::mapToBookingTimeDto).orElse(null)
-                    );
-                })
                 .collect(Collectors.toList());
     }
 

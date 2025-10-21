@@ -22,6 +22,7 @@ public class Item {
     private String name;
     private String description;
     @Column(name = "is_available")
+    @Builder.Default
     private Boolean available = true;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id")

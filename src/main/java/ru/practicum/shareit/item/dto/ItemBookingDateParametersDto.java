@@ -1,23 +1,19 @@
 package ru.practicum.shareit.item.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import ru.practicum.shareit.booking.dto.BookingTimeDto;
-
+import java.util.Collections;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ItemBookingDateParametersDto {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
@@ -33,5 +29,6 @@ public class ItemBookingDateParametersDto {
     private Long requestId;
     private BookingTimeDto lastBooking;
     private BookingTimeDto nextBooking;
-    private List<CommentDto> comments;
+    @Builder.Default
+    private List<CommentDto> comments = Collections.emptyList();
 }
