@@ -45,11 +45,14 @@ public class BookingServiceImpl implements BookingService {
 
         Collection<Booking> bookings = switch (bookingState) {
             case ALL -> bookingRepository.findByBookerId(userId);
-            case CURRENT -> bookingRepository.findCurrentBookingsByBookerId(userId);
-            case PAST -> bookingRepository.findPastBookingsByBookerId(userId);
-            case FUTURE -> bookingRepository.findFutureBookingsByBookerId(userId);
-            case WAITING -> bookingRepository.findWaitingBookingsByBookerId(userId);
-            case REJECTED -> bookingRepository.findRejectedBookingsByBookerId(userId);
+            case CURRENT -> bookingRepository.findCurrentBookingsByBookerId(userId, BookingStatus.WAITING,
+                    BookingStatus.APPROVED);
+            case PAST -> bookingRepository.findPastBookingsByBookerId(userId, BookingStatus.APPROVED);
+            case FUTURE -> bookingRepository.findFutureBookingsByBookerId(userId, BookingStatus.WAITING,
+                    BookingStatus.APPROVED);
+            case WAITING -> bookingRepository.findWaitingBookingsByBookerId(userId, BookingStatus.WAITING);
+            case REJECTED -> bookingRepository.findRejectedBookingsByBookerId(userId, BookingStatus.REJECTED,
+                    BookingStatus.CANCELED);
         };
         return bookings.stream()
                 .map(bookingMapper::mapToBookingDto)
@@ -70,11 +73,14 @@ public class BookingServiceImpl implements BookingService {
         }
         Collection<Booking> bookings = switch (bookingState) {
             case ALL -> bookingRepository.findAllBookingsForOwner(ownerId);
-            case CURRENT -> bookingRepository.findCurrentBookingsForOwner(ownerId);
-            case PAST -> bookingRepository.findPastBookingsForOwner(ownerId);
-            case FUTURE -> bookingRepository.findFutureBookingsForOwner(ownerId);
-            case WAITING -> bookingRepository.findWaitingBookingsForOwner(ownerId);
-            case REJECTED -> bookingRepository.findRejectedBookingsForOwner(ownerId);
+            case CURRENT -> bookingRepository.findCurrentBookingsForOwner(ownerId, BookingStatus.WAITING,
+                    BookingStatus.APPROVED);
+            case PAST -> bookingRepository.findPastBookingsForOwner(ownerId, BookingStatus.APPROVED);
+            case FUTURE -> bookingRepository.findFutureBookingsForOwner(ownerId, BookingStatus.WAITING,
+                    BookingStatus.APPROVED);
+            case WAITING -> bookingRepository.findWaitingBookingsForOwner(ownerId, BookingStatus.WAITING);
+            case REJECTED -> bookingRepository.findRejectedBookingsForOwner(ownerId, BookingStatus.REJECTED,
+                    BookingStatus.CANCELED);
         };
         return bookings.stream()
                 .map(bookingMapper::mapToBookingDto)
@@ -172,7 +178,8 @@ public class BookingServiceImpl implements BookingService {
     }
 
     private void intersectionBooking(Item item, NewBookingRequest request) {
-        if (bookingRepository.existsOverlappingBookings(item.getId(), request.getStart(), request.getEnd())) {
+        if (bookingRepository.existsOverlappingBookings(item.getId(), request.getStart(), request.getEnd(),
+                BookingStatus.APPROVED, BookingStatus.WAITING)) {
             throw new ValidationException("На выбранные даты вещь уже забронирована");
         }
     }

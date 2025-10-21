@@ -1,6 +1,5 @@
 package ru.practicum.shareit.item.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
@@ -10,8 +9,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.practicum.shareit.booking.dto.BookingTimeDto;
 
-import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
@@ -31,10 +31,7 @@ public class ItemBookingDateParametersDto {
     @NotBlank(message = "Имя не может быть пустым")
     private String owner;
     private Long requestId;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private LocalDateTime lastBookingEnd;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private LocalDateTime nextBookingStart;
+    private BookingTimeDto lastBooking;
+    private BookingTimeDto nextBooking;
+    private List<CommentDto> comments;
 }

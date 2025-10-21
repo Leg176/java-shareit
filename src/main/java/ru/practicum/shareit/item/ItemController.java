@@ -5,10 +5,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.item.dto.ItemBookingDateParametersDto;
-import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.NewItemDto;
-import ru.practicum.shareit.item.dto.UpdateItemDto;
+import ru.practicum.shareit.item.dto.*;
+
 import java.util.Collection;
 import java.util.List;
 import static ru.practicum.shareit.constants.HttpHeaders.X_SHARER_USER_ID;
@@ -32,6 +30,13 @@ public class ItemController {
         return itemService.getUsersItemsWithBookingDates(userId);
     }
 
+    @GetMapping("/{itemId}")
+    public ItemBookingDateParametersDto getItemBookingDateParametersDto(
+            @RequestHeader(X_SHARER_USER_ID) Long ownerId,
+            @PathVariable @Positive(message = "itemId должен быть больше 0") Long itemId) {
+        return itemService.getItemById(itemId, ownerId);
+    }
+
     @PostMapping
     public ItemDto create(@RequestHeader(X_SHARER_USER_ID) Long ownerId,
                           @Valid @RequestBody @NotNull NewItemDto itemRequest) {
@@ -47,11 +52,6 @@ public class ItemController {
         return itemService.updateItem(request);
     }
 
-    @GetMapping("/{id}")
-    public ItemDto getItem(@PathVariable @Positive(message = "id должен быть больше 0") Long id) {
-        return itemService.getItemById(id);
-    }
-
     @DeleteMapping("/{id}")
     public void removeItem(@PathVariable @Positive(message = "id должен быть больше 0") Long id,
                            @RequestHeader(X_SHARER_USER_ID) Long ownerId) {
@@ -61,5 +61,12 @@ public class ItemController {
     @GetMapping("/search")
     public List<ItemDto> searchFilms(@RequestParam String text) {
         return itemService.searchItems(text);
+    }
+
+    @PostMapping("/{itemId}/comment")
+    public CommentDto create(@RequestHeader(X_SHARER_USER_ID) Long ownerId,
+                             @PathVariable @Positive(message = "itemId должен быть больше 0") Long itemId,
+                             @Valid @RequestBody @NotNull NewCommentRequest request) {
+        return itemService.addNewComment(ownerId, itemId, request);
     }
 }

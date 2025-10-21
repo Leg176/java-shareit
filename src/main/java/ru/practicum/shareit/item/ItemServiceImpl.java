@@ -4,15 +4,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.BookingRepository;
+import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
+import ru.practicum.shareit.error.exception.BadRequestException;
 import ru.practicum.shareit.error.exception.NotFoundException;
 import ru.practicum.shareit.error.exception.ValidationException;
-import ru.practicum.shareit.item.dto.ItemBookingDateParametersDto;
-import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.NewItemDto;
-import ru.practicum.shareit.item.dto.UpdateItemDto;
+import ru.practicum.shareit.item.dto.*;
+import ru.practicum.shareit.item.mapper.CommentMapper;
 import ru.practicum.shareit.item.mapper.ItemMapper;
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
@@ -30,6 +31,9 @@ public class ItemServiceImpl implements ItemService {
     private final UserRepository userRepository;
     private final BookingRepository bookingRepository;
     private final ItemMapper itemMapper;
+    private final CommentMapper commentMapper;
+    private final CommentRepository commentRepository;
+    private final BookingMapper bookingMapper;
 
     @Override
     @Transactional(readOnly = true)
@@ -60,9 +64,16 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional(readOnly = true)
-    public ItemDto getItemById(Long id) {
-        Item item = findByIdItem(id);
-        return itemMapper.mapToItemDto(item);
+    public ItemBookingDateParametersDto getItemById(Long itemId, Long ownerId) {
+        Item item = findByIdItem(itemId);
+        Optional<Booking> lastBooking = bookingRepository.findLastBookingForItem(item.getId(),
+                BookingStatus.APPROVED);
+        Optional<Booking> nextBooking = bookingRepository.findNextBookingForItem(item.getId(),
+                BookingStatus.APPROVED, BookingStatus.WAITING);
+
+        return itemMapper.mapToItemBookingDateParametersDto(item,
+                lastBooking.map(bookingMapper::mapToBookingTimeDto).orElse(null),
+                nextBooking.map(bookingMapper::mapToBookingTimeDto).orElse(null));
     }
 
     @Override
@@ -113,11 +124,23 @@ public class ItemServiceImpl implements ItemService {
                     // Вручную добавляем данные в DTO
                     return itemMapper.mapToItemBookingDateParametersDto(
                             item,
-                            lastBooking.map(Booking::getEnd).orElse(null),
-                            nextBooking.map(Booking::getStart).orElse(null)
+                            lastBooking.map(bookingMapper::mapToBookingTimeDto).orElse(null),
+                            nextBooking.map(bookingMapper::mapToBookingTimeDto).orElse(null)
                     );
                 })
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public CommentDto addNewComment(Long authorId, Long itemId, NewCommentRequest request) {
+        User author = findByIdUser(authorId);
+        Item item = findByIdItem(itemId);
+        BookingStatus status = BookingStatus.APPROVED;
+        validateUserCanComment(authorId, itemId, status);
+        Comment comment = commentMapper.mapToComment(request, author, item);
+        commentRepository.save(comment);
+        return commentMapper.mapToCommentDto(comment);
     }
 
     private Item findByIdItem(Long id) {
@@ -139,6 +162,14 @@ public class ItemServiceImpl implements ItemService {
     private void validationOwner(Item item, Long ownerId) {
         if (!item.getOwner().getId().equals(ownerId)) {
             throw new ValidationException("Вы не являетесь владельцем, доступ запрещён!");
+        }
+    }
+
+    private void validateUserCanComment(Long userId, Long itemId, BookingStatus status) {
+        boolean hasCompletedBooking = bookingRepository.existsByBookerIdAndItemIdAndEndBefore(
+                userId, itemId, status);
+        if (!hasCompletedBooking) {
+            throw new BadRequestException("Оставлять комментарии можно только к арендованным вещам!");
         }
     }
 }

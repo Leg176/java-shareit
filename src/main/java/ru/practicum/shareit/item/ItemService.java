@@ -1,9 +1,7 @@
 package ru.practicum.shareit.item;
 
-import ru.practicum.shareit.item.dto.ItemBookingDateParametersDto;
-import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.NewItemDto;
-import ru.practicum.shareit.item.dto.UpdateItemDto;
+import ru.practicum.shareit.item.dto.*;
+
 import java.util.Collection;
 import java.util.List;
 
@@ -16,11 +14,13 @@ public interface ItemService {
 
     ItemDto updateItem(UpdateItemDto request);
 
-    ItemDto getItemById(Long id);
+    ItemBookingDateParametersDto getItemById(Long itemId, Long ownerId);
 
     void deleteItem(Long id, Long ownerId);
 
     List<ItemDto> searchItems(String text);
 
     List<ItemBookingDateParametersDto> getUsersItemsWithBookingDates(Long ownerId);
+
+    CommentDto addNewComment(Long ownerId, Long itemId, NewCommentRequest request);
 }
