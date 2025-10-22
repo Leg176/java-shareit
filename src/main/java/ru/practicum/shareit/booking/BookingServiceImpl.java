@@ -17,6 +17,9 @@ import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
+
+import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -44,15 +47,17 @@ public class BookingServiceImpl implements BookingService {
         }
 
         Collection<Booking> bookings = switch (bookingState) {
-            case ALL -> bookingRepository.findByBookerId(userId);
-            case CURRENT -> bookingRepository.findCurrentBookingsByBookerId(userId, BookingStatus.WAITING,
-                    BookingStatus.APPROVED);
-            case PAST -> bookingRepository.findPastBookingsByBookerId(userId, BookingStatus.APPROVED);
-            case FUTURE -> bookingRepository.findFutureBookingsByBookerId(userId, BookingStatus.WAITING,
-                    BookingStatus.APPROVED);
-            case WAITING -> bookingRepository.findWaitingBookingsByBookerId(userId, BookingStatus.WAITING);
-            case REJECTED -> bookingRepository.findRejectedBookingsByBookerId(userId, BookingStatus.REJECTED,
-                    BookingStatus.CANCELED);
+            case ALL -> bookingRepository.findByBookerIdOrderByStartDesc(userId);
+            case CURRENT ->
+                    bookingRepository.findByBookerIdAndStartLessThanEqualAndEndGreaterThanEqualAndStatusInOrderByStartDesc(
+                            userId, LocalDateTime.now(), LocalDateTime.now(), Arrays.asList(BookingStatus.WAITING, BookingStatus.APPROVED));
+            case PAST -> bookingRepository.findByBookerIdAndEndLessThanAndStatusOrderByStartDesc(
+                    userId, LocalDateTime.now(), BookingStatus.APPROVED);
+            case FUTURE -> bookingRepository.findByBookerIdAndStartGreaterThanAndStatusInOrderByStartDesc(
+                    userId, LocalDateTime.now(), Arrays.asList(BookingStatus.WAITING, BookingStatus.APPROVED));
+            case WAITING -> bookingRepository.findByBookerIdAndStatusOrderByStartDesc(userId, BookingStatus.WAITING);
+            case REJECTED -> bookingRepository.findByBookerIdAndStatusInOrderByStartDesc(userId,
+                    Arrays.asList(BookingStatus.REJECTED, BookingStatus.CANCELED));
         };
         return bookings.stream()
                 .map(bookingMapper::mapToBookingDto)
@@ -72,15 +77,18 @@ public class BookingServiceImpl implements BookingService {
             throw new ValidationException("Передан некорректное значение");
         }
         Collection<Booking> bookings = switch (bookingState) {
-            case ALL -> bookingRepository.findAllBookingsForOwner(ownerId);
-            case CURRENT -> bookingRepository.findCurrentBookingsForOwner(ownerId, BookingStatus.WAITING,
-                    BookingStatus.APPROVED);
-            case PAST -> bookingRepository.findPastBookingsForOwner(ownerId, BookingStatus.APPROVED);
-            case FUTURE -> bookingRepository.findFutureBookingsForOwner(ownerId, BookingStatus.WAITING,
-                    BookingStatus.APPROVED);
-            case WAITING -> bookingRepository.findWaitingBookingsForOwner(ownerId, BookingStatus.WAITING);
-            case REJECTED -> bookingRepository.findRejectedBookingsForOwner(ownerId, BookingStatus.REJECTED,
-                    BookingStatus.CANCELED);
+            case ALL -> bookingRepository.findByItemOwnerIdOrderByStartDesc(ownerId);
+            case CURRENT ->
+                    bookingRepository.findByItemOwnerIdAndStartLessThanEqualAndEndGreaterThanEqualAndStatusInOrderByStartDesc(
+                            ownerId, LocalDateTime.now(), LocalDateTime.now(), Arrays.asList(BookingStatus.WAITING, BookingStatus.APPROVED));
+            case PAST -> bookingRepository.findByItemOwnerIdAndEndLessThanAndStatusOrderByStartDesc(
+                    ownerId, LocalDateTime.now(), BookingStatus.APPROVED);
+            case FUTURE -> bookingRepository.findByItemOwnerIdAndStartGreaterThanAndStatusInOrderByStartDesc(
+                    ownerId, LocalDateTime.now(), Arrays.asList(BookingStatus.WAITING, BookingStatus.APPROVED));
+            case WAITING ->
+                    bookingRepository.findByItemOwnerIdAndStatusOrderByStartDesc(ownerId, BookingStatus.WAITING);
+            case REJECTED -> bookingRepository.findByItemOwnerIdAndStatusInOrderByStartDesc(ownerId,
+                    Arrays.asList(BookingStatus.REJECTED, BookingStatus.CANCELED));
         };
         return bookings.stream()
                 .map(bookingMapper::mapToBookingDto)

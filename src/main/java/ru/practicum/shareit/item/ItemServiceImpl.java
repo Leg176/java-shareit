@@ -17,6 +17,8 @@ import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
+
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -83,10 +85,10 @@ public class ItemServiceImpl implements ItemService {
                 .map(commentMapper::mapToCommentDto)
                 .toList();
         if (item.getOwner().getId().equals(ownerId)) {
-        Optional<Booking> lastBooking = bookingRepository.findLastBookingForItem(item.getId(),
-                BookingStatus.APPROVED);
-        Optional<Booking> nextBooking = bookingRepository.findNextBookingForItem(item.getId(),
-                BookingStatus.APPROVED, BookingStatus.WAITING);
+        Optional<Booking> lastBooking = bookingRepository.findTopByItemIdAndStatusAndEndLessThanOrderByEndDesc(
+                item.getId(), BookingStatus.APPROVED, LocalDateTime.now());
+        Optional<Booking> nextBooking = bookingRepository.findTopByItemIdAndStatusAndStartGreaterThanOrderByStartAsc(
+                item.getId(), BookingStatus.APPROVED, LocalDateTime.now());
         return itemMapper.mapToItemBookingDateParametersDto(item,
                 lastBooking.map(bookingMapper::mapToBookingTimeDto).orElse(null),
                 nextBooking.map(bookingMapper::mapToBookingTimeDto).orElse(null),
