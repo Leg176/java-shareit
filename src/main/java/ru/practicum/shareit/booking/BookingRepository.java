@@ -74,13 +74,11 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
                                                      @Param("status1") BookingStatus status1,
                                                      @Param("status2") BookingStatus status2);
 
-    @Query("SELECT COUNT(b) > 0 FROM Booking b WHERE b.item.id = :itemId " +
-            "AND b.status IN (:status1, :status2) " +
+    @Query("SELECT COUNT(b) > 0 FROM Booking b WHERE b.item.id = :itemId AND b.status = :status " +
             "AND ((b.start BETWEEN :start AND :end) OR (b.end BETWEEN :start AND :end) " +
             "OR (b.start <= :start AND b.end >= :end))")
     boolean existsOverlappingBookings(@Param("itemId") Long itemId, @Param("start") LocalDateTime start,
-                                      @Param("end") LocalDateTime end, @Param("status1") BookingStatus status1,
-                                      @Param("status2") BookingStatus status2);
+                                      @Param("end") LocalDateTime end, @Param("status") BookingStatus status);
 
 
     // Последнее завершенное бронирование для вещи

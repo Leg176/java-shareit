@@ -7,7 +7,6 @@ import ru.practicum.shareit.item.model.Item;
 import java.util.List;
 
 public interface ItemRepository extends JpaRepository<Item, Long> {
-    @Query("SELECT i FROM Item i WHERE i.owner.id = :ownerId")
     List<Item> findByOwnerId(@Param("ownerId") Long ownerId);
 
     @Query("SELECT i FROM Item i WHERE i.available = true " +

@@ -122,7 +122,7 @@ public class BookingServiceImpl implements BookingService {
     public BookingDto getBookingById(Long bookingId, Long userId) {
         Booking booking = findByIdBooking(bookingId);
         if (!booking.getItem().getOwner().getId().equals(userId) && !booking.getBooker().getId().equals(userId)) {
-            throw new ValidationException("Просмотр запрещён!");
+            throw new ForbiddenException("Просмотр запрещён!");
         }
         return bookingMapper.mapToBookingDto(booking);
     }
@@ -179,7 +179,7 @@ public class BookingServiceImpl implements BookingService {
 
     private void intersectionBooking(Item item, NewBookingRequest request) {
         if (bookingRepository.existsOverlappingBookings(item.getId(), request.getStart(), request.getEnd(),
-                BookingStatus.APPROVED, BookingStatus.WAITING)) {
+                BookingStatus.APPROVED)) {
             throw new ValidationException("На выбранные даты вещь уже забронирована");
         }
     }
