@@ -10,15 +10,6 @@ import ru.practicum.shareit.user.model.User;
 @Component
 public class BookingMapper {
     public Booking mapToBooking(NewBookingRequest request, User booker, Item item) {
-        if (request == null) {
-            throw new IllegalArgumentException("Request не может быть пустым!");
-        }
-        if (booker == null) {
-            throw new IllegalArgumentException("User (booker) не может быть null");
-        }
-        if (item == null) {
-            throw new IllegalArgumentException("Item не может быть null");
-        }
         return Booking.builder()
                 .item(item)
                 .start(request.getStart())

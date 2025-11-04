@@ -49,6 +49,7 @@ public interface ItemMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "request", ignore = true)
     @Mapping(target = "name", source = "newItemDto.name")
+    @Mapping(target = "description", source = "newItemDto.description")
     @Mapping(target = "owner", source = "user")
     Item mapToItem(NewItemDto newItemDto, User user);
 

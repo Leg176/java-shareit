@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.error.exception.NotFoundException;
 import ru.practicum.shareit.error.exception.ValidationException;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
+import ru.practicum.shareit.request.dto.ItemRequestWithoutItemsDto;
 import ru.practicum.shareit.request.dto.NewItemRequestDto;
 import ru.practicum.shareit.request.dto.UpdateItemRequestDto;
 import ru.practicum.shareit.request.mapper.ItemRequestMapper;
@@ -23,17 +24,16 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     private final ItemRequestMapper itemRequestMapper;
 
     @Override
-    public Collection<ItemRequestDto> getRequests() {
-        return itemRequestRepository.findAll().stream()
+    public Collection<ItemRequestDto> getRequestsByOwner(Long ownerId) {
+        return itemRequestRepository.findUserRequestsWithItems(ownerId).stream()
                 .map(itemRequestMapper::mapToRequestDto)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Collection<ItemRequestDto> getRequestsByOwner(Long ownerId) {
-        findByIdUser(ownerId);
-        return itemRequestRepository.getRequestsUser(ownerId).stream()
-                .map(itemRequestMapper::mapToRequestDto)
+    public Collection<ItemRequestWithoutItemsDto> getRequestsByNotOwner(Long ownerId) {
+        return itemRequestRepository.findByRequestorIdNot(ownerId).stream()
+                .map(itemRequestMapper::mapToRequestDtoNotItems)
                 .collect(Collectors.toList());
     }
 
@@ -41,6 +41,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     public ItemRequestDto addNewRequest(NewItemRequestDto newRequest, Long ownerId) {
         User user = findByIdUser(ownerId);
         ItemRequest request = itemRequestMapper.mapToRequest(newRequest, user);
+        itemRequestRepository.save(request);
         return itemRequestMapper.mapToRequestDto(request);
     }
 
@@ -77,7 +78,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     private ItemRequest findByIdItemRequest(Long id) {
-        Optional<ItemRequest> optRequest = itemRequestRepository.findByRequestId(id);
+        Optional<ItemRequest> optRequest = itemRequestRepository.findByIdWithItems(id);
         if (optRequest.isEmpty()) {
             throw new NotFoundException("Запрос с id: " + id + " в базе отсутствует");
         }

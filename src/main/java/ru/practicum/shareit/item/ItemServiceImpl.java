@@ -15,6 +15,8 @@ import ru.practicum.shareit.item.mapper.CommentMapper;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.request.ItemRequestRepository;
+import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
 
@@ -33,6 +35,7 @@ public class ItemServiceImpl implements ItemService {
     private final CommentMapper commentMapper;
     private final CommentRepository commentRepository;
     private final BookingMapper bookingMapper;
+    private final ItemRequestRepository itemRequestRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -71,9 +74,16 @@ public class ItemServiceImpl implements ItemService {
     @Transactional
     public ItemDto addNewItem(NewItemDto request, Long ownerId) {
         User owner = findByIdUser(ownerId);
-        Item item = itemMapper.mapToItem(request, owner);
-        itemRepository.save(item);
-        return itemMapper.mapToItemDto(item);
+        if (request.getRequestId() != null) {
+            ItemRequest itemRequest = findByIdRequest(request.getRequestId());
+            Item item = itemMapper.mapToItem(request, owner, itemRequest);
+            itemRepository.save(item);
+            return itemMapper.mapToItemDto(item);
+        } else {
+            Item item = itemMapper.mapToItem(request, owner);
+            itemRepository.save(item);
+            return itemMapper.mapToItemDto(item);
+        }
     }
 
     @Override
@@ -154,6 +164,14 @@ public class ItemServiceImpl implements ItemService {
             throw new NotFoundException("Пользователь с id: " + id + " в базе отсутствует");
         }
         return optUser.get();
+    }
+
+    private ItemRequest findByIdRequest(Long id) {
+        Optional<ItemRequest> optItemRequest = itemRequestRepository.findById(id);
+        if (optItemRequest.isEmpty()) {
+            throw new NotFoundException("Запрос с id: " + id + " в базе отсутствует");
+        }
+        return optItemRequest.get();
     }
 
     private void validationOwner(Item item, Long ownerId) {

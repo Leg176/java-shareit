@@ -1,6 +1,5 @@
 package ru.practicum.shareit.item.mapper;
 
-
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.error.exception.BadRequestException;
 import ru.practicum.shareit.item.dto.CommentDto;

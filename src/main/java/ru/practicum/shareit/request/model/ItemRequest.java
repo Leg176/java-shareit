@@ -2,8 +2,11 @@ package ru.practicum.shareit.request.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * TODO Sprint add-item-requests.
@@ -23,5 +26,8 @@ public class ItemRequest {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "requestor_id")
     private User requestor;
+    @Column(name = "created")
     private LocalDateTime timeCreated;
+    @OneToMany(mappedBy = "request", fetch = FetchType.LAZY)
+    private List<Item> items = new ArrayList<>();
 }

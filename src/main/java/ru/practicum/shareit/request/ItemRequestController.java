@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.request.dto.ItemRequestWithoutItemsDto;
 import ru.practicum.shareit.request.dto.NewItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.UpdateItemRequestDto;
@@ -30,6 +31,16 @@ public class ItemRequestController {
         return itemRequestService.getRequestsByOwner(userId);
     }
 
+    @GetMapping("/{id}")
+    public ItemRequestDto getRequest(@PathVariable @Positive(message = "id должен быть больше 0") Long id) {
+        return itemRequestService.getRequestById(id);
+    }
+
+    @GetMapping("/all")
+    public Collection<ItemRequestWithoutItemsDto> getRequestNotOwner(@RequestHeader(X_SHARER_USER_ID) Long userId) {
+        return itemRequestService.getRequestsByNotOwner(userId);
+    }
+
     @PostMapping
     public ItemRequestDto create(@RequestHeader(X_SHARER_USER_ID) Long ownerId,
                                  @Valid @RequestBody @NotNull NewItemRequestDto itemRequest) {
@@ -42,11 +53,6 @@ public class ItemRequestController {
                                  @PathVariable @Positive(message = "id должен быть больше 0") Long id) {
         request.setId(id);
         return itemRequestService.updateRequest(request, ownerId);
-    }
-
-    @GetMapping("/{id}")
-    public ItemRequestDto getRequest(@PathVariable @Positive(message = "id должен быть больше 0") Long id) {
-        return itemRequestService.getRequestById(id);
     }
 
     @DeleteMapping("/{id}")
