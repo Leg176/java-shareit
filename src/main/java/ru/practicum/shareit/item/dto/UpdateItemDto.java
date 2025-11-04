@@ -1,18 +1,15 @@
 package ru.practicum.shareit.item.dto;
 
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class UpdateItemDto {
-    @Min(value = 1, message = "Id не может быть меньше 1.")
+
     private Long id;
     private String name;
     @Size(max = 200, message = "Описание не должно превышать 200 символов")

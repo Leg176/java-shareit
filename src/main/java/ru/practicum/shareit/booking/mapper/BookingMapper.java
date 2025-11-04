@@ -1,9 +1,7 @@
 package ru.practicum.shareit.booking.mapper;
 
 import org.springframework.stereotype.Component;
-import ru.practicum.shareit.booking.dto.BookingDto;
-import ru.practicum.shareit.booking.dto.NewBookingRequest;
-import ru.practicum.shareit.booking.dto.UpdateBookingRequest;
+import ru.practicum.shareit.booking.dto.*;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.item.model.Item;
@@ -26,48 +24,39 @@ public class BookingMapper {
                 .start(request.getStart())
                 .end(request.getEnd())
                 .booker(booker)
-                .status(checkBookingStatus(request.getStatus()))
+                .status(BookingStatus.WAITING)
                 .build();
     }
 
     public BookingDto mapToBookingDto(Booking booking) {
         return BookingDto.builder()
                 .id(booking.getId())
-                .itemId(booking.getItem().getId())
+                .item(BookingItemDto.builder()
+                        .name(booking.getItem().getName())
+                        .id(booking.getItem().getId())
+                        .build())
                 .start(booking.getStart())
                 .end(booking.getEnd())
-                .booker(booking.getBooker().getName())
-                .status(booking.getStatus().name())
+                .booker(BookingBookerDto.builder()
+                        .id(booking.getBooker().getId())
+                        .build())
+                .status(booking.getStatus())
                 .build();
     }
 
-    public Booking updateBookingFields(Booking booking, UpdateBookingRequest request) {
-        if (request == null) {
-            throw new IllegalArgumentException("Request не может быть пустым!");
-        }
+    public BookingTimeDto mapToBookingTimeDto(Booking booking) {
+        return BookingTimeDto.builder()
+                .id(booking.getId())
+                .bookerId(booking.getBooker().getId())
+                .end(booking.getEnd())
+                .start(booking.getStart())
+                .build();
+    }
+
+    public void updateBookingStatus(Booking booking, BookingStatus status) {
         if (booking == null) {
             throw new IllegalArgumentException("Бронирование не может быть пустым");
         }
-        if (request.hasDateStart()) {
-            booking.setStart(request.getStart());
-        }
-        if (request.hasDateEnd()) {
-            booking.setEnd(request.getEnd());
-        }
-        if (request.hasStatus()) {
-            booking.setStatus(checkBookingStatus(request.getStatus()));
-        }
-        return booking;
-    }
-
-    private BookingStatus checkBookingStatus(String status) {
-        if (status == null || status.isBlank()) {
-            return BookingStatus.WAITING;
-        }
-        try {
-            return BookingStatus.valueOf(status.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Неверный статус бронирования: " + status);
-        }
+        booking.setStatus(status);
     }
 }

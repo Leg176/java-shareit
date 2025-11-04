@@ -26,17 +26,17 @@ public class UserController {
 
     @GetMapping
     public Collection<UserDto> findAll() {
-        return userService.getUsers();
+        return userService.getAllUsers();
     }
 
     @PostMapping
     public UserDto create(@Valid @RequestBody @NotNull NewUserDto userRequest) {
-        return userService.addNewUser(userRequest);
+        return userService.saveUser(userRequest);
     }
 
     @PatchMapping("/{userId}")
     public UserDto update(@PathVariable @Positive(message = "id должен быть больше 0") Long userId,
-                           @Valid @RequestBody @NotNull UpdateUserDto request) {
+                          @Valid @RequestBody @NotNull UpdateUserDto request) {
         request.setId(userId);
         return userService.updateUser(request);
     }
