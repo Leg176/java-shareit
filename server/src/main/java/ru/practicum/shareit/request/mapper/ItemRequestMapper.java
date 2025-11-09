@@ -17,7 +17,7 @@ public class ItemRequestMapper {
         return ItemRequest.builder()
                 .description(request.getDescription())
                 .requestor(requestor)
-                .timeCreated(LocalDateTime.now())
+                .created(LocalDateTime.now())
                 .build();
     }
 
@@ -33,7 +33,7 @@ public class ItemRequestMapper {
                 .id(itemRequest.getId())
                 .description(itemRequest.getDescription())
                 .requestor(itemRequest.getRequestor().getName())
-                .timeCreated(itemRequest.getTimeCreated())
+                .created(itemRequest.getCreated())
                 .items(itemsDto)
                 .build();
     }
@@ -43,7 +43,7 @@ public class ItemRequestMapper {
                 .id(itemRequest.getId())
                 .description(itemRequest.getDescription())
                 .requestor(itemRequest.getRequestor().getName())
-                .timeCreated(itemRequest.getTimeCreated())
+                .created(itemRequest.getCreated())
                 .build();
     }
 

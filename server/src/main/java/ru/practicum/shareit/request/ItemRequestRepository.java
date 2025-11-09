@@ -14,7 +14,7 @@ public interface ItemRequestRepository extends JpaRepository<ItemRequest, Long> 
     @Query("SELECT DISTINCT ir FROM ItemRequest ir " +
             "LEFT JOIN FETCH ir.items " + // items - это вещи, созданные с request_id = ir.id
             "WHERE ir.requestor.id = :userId " +
-            "ORDER BY ir.timeCreated DESC")
+            "ORDER BY ir.created DESC")
     List<ItemRequest> findUserRequestsWithItems(@Param("userId") Long userId);
 
     @Query("SELECT ir FROM ItemRequest ir " +

@@ -18,5 +18,5 @@ public class ItemRequestWithoutItemsDto {
     private String requestor;
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private LocalDateTime timeCreated;
+    private LocalDateTime created;
 }

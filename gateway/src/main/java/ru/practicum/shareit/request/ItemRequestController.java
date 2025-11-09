@@ -16,11 +16,11 @@ import static ru.practicum.shareit.constants.HttpHeaders.X_SHARER_USER_ID;
 
 @Controller
 @RequestMapping(path = "/requests")
-@RequiredArgsConstructor
 @Slf4j
 @Validated
+@RequiredArgsConstructor
 public class ItemRequestController {
-    @Autowired
+
     private final ItemRequestClient itemRequestClient;
 
     @GetMapping

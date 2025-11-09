@@ -24,7 +24,7 @@ public class ItemRequest {
     @JoinColumn(name = "requestor_id")
     private User requestor;
     @Column(name = "created")
-    private LocalDateTime timeCreated;
+    private LocalDateTime created;
     @OneToMany(mappedBy = "request", fetch = FetchType.LAZY)
     private List<Item> items = new ArrayList<>();
 }

@@ -10,7 +10,7 @@ import static ru.practicum.shareit.constants.HttpHeaders.X_SHARER_USER_ID;
  * TODO Sprint add-bookings.
  */
 @RestController
-@RequestMapping(path = "/internal/bookings")
+@RequestMapping(path = "/bookings")
 public class BookingController {
     private final BookingService bookingService;
 

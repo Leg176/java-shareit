@@ -56,7 +56,7 @@ public class BookingClient extends BaseClient {
         Map<String, Object> parameters = Map.of(
                 "approved", approved
         );
-        return patch("/" + bookingId + "approved={approved}", ownerId, parameters, null);
+        return patch("/" + bookingId + "?approved={approved}", ownerId, parameters, null);
     }
 
     public ResponseEntity<Object> deleteBooking(Long id, Long ownerId) {

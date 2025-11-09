@@ -62,8 +62,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void deleteUser(Long id) {
-        User user = findByIdUser(id);
-        repository.delete(user);
+        repository.deleteById(id);
     }
 
     private void isContainsEmail(String newEmail, Long id) {
