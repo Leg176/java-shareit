@@ -4,9 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.BookingRepository;
+import ru.practicum.shareit.booking.entity.Booking;
 import ru.practicum.shareit.booking.enums.BookingStatus;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
-import ru.practicum.shareit.booking.entity.Booking;
 import ru.practicum.shareit.error.exceptions.BadRequestException;
 import ru.practicum.shareit.error.exceptions.NotFoundException;
 import ru.practicum.shareit.error.exceptions.ValidationException;
@@ -19,6 +19,7 @@ import ru.practicum.shareit.request.ItemRequestRepository;
 import ru.practicum.shareit.request.entity.ItemRequest;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.entity.User;
+
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -94,16 +95,16 @@ public class ItemServiceImpl implements ItemService {
                 .map(commentMapper::mapToCommentDto)
                 .toList();
         if (item.getOwner().getId().equals(ownerId)) {
-        Optional<Booking> lastBooking = bookingRepository.findTopByItemIdAndStatusAndEndLessThanOrderByEndDesc(
-                item.getId(), BookingStatus.APPROVED, LocalDateTime.now());
-        Optional<Booking> nextBooking = bookingRepository.findTopByItemIdAndStatusAndStartGreaterThanOrderByStartAsc(
-                item.getId(), BookingStatus.APPROVED, LocalDateTime.now());
-        return itemMapper.mapToItemBookingDateParametersDto(item,
-                lastBooking.map(bookingMapper::mapToBookingTimeDto).orElse(null),
-                nextBooking.map(bookingMapper::mapToBookingTimeDto).orElse(null),
-                commentsDto);
+            Optional<Booking> lastBooking = bookingRepository.findTopByItemIdAndStatusAndEndLessThanOrderByEndDesc(
+                    item.getId(), BookingStatus.APPROVED, LocalDateTime.now());
+            Optional<Booking> nextBooking = bookingRepository.findTopByItemIdAndStatusAndStartGreaterThanOrderByStartAsc(
+                    item.getId(), BookingStatus.APPROVED, LocalDateTime.now());
+            return itemMapper.mapToItemBookingDateParametersDto(item,
+                    lastBooking.map(bookingMapper::mapToBookingTimeDto).orElse(null),
+                    nextBooking.map(bookingMapper::mapToBookingTimeDto).orElse(null),
+                    commentsDto);
         }
-            return itemMapper.mapToItemParametersDto(item, commentsDto);
+        return itemMapper.mapToItemParametersDto(item, commentsDto);
     }
 
     @Override

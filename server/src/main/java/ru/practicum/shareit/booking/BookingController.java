@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.NewBookingRequest;
+
 import java.util.Collection;
+
 import static ru.practicum.shareit.constants.HttpHeaders.X_SHARER_USER_ID;
 
 /**

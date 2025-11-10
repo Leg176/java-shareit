@@ -3,6 +3,7 @@ package ru.practicum.shareit.item.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import ru.practicum.shareit.booking.dto.BookingTimeDto;
+
 import java.util.Collections;
 import java.util.List;
 

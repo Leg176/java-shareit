@@ -11,6 +11,7 @@ import ru.practicum.shareit.client.BaseClient;
 import ru.practicum.shareit.item.dto.NewCommentRequest;
 import ru.practicum.shareit.item.dto.NewItemDto;
 import ru.practicum.shareit.item.dto.UpdateItemDto;
+
 import java.util.Map;
 
 @Service
@@ -29,7 +30,7 @@ public class ItemClient extends BaseClient {
 
     public ResponseEntity<Object> searchItems(String text) {
         Map<String, Object> parameters = Map.of("text", text);
-        return get("/search?text={text}",null, parameters);
+        return get("/search?text={text}", null, parameters);
     }
 
     public ResponseEntity<Object> getItem(Long itemId, Long ownerId) {

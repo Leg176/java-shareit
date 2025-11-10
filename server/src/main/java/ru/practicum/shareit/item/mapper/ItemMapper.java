@@ -8,6 +8,7 @@ import ru.practicum.shareit.item.dto.*;
 import ru.practicum.shareit.item.entity.Item;
 import ru.practicum.shareit.request.entity.ItemRequest;
 import ru.practicum.shareit.user.entity.User;
+
 import java.util.List;
 
 @Mapper(componentModel = "spring")

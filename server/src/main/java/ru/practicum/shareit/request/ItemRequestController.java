@@ -2,10 +2,11 @@ package ru.practicum.shareit.request;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestWithoutItemsDto;
 import ru.practicum.shareit.request.dto.NewItemRequestDto;
-import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.UpdateItemRequestDto;
+
 import java.util.Collection;
 
 import static ru.practicum.shareit.constants.HttpHeaders.X_SHARER_USER_ID;
@@ -54,7 +55,7 @@ public class ItemRequestController {
 
     @DeleteMapping("/{id}")
     public void removeRequest(@PathVariable Long id,
-                           @RequestHeader(X_SHARER_USER_ID) Long ownerId) {
+                              @RequestHeader(X_SHARER_USER_ID) Long ownerId) {
         itemRequestService.deleteRequest(id, ownerId);
     }
 }

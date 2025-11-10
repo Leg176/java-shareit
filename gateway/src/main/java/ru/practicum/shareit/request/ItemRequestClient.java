@@ -26,7 +26,7 @@ public class ItemRequestClient extends BaseClient {
     }
 
     public ResponseEntity<Object> getRequestsByNotOwner(Long userId) {
-        return get("/all",userId);
+        return get("/all", userId);
     }
 
     public ResponseEntity<Object> getRequestById(Long id) {

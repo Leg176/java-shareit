@@ -10,6 +10,7 @@ import ru.practicum.shareit.user.dto.UpdateUserDto;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.entity.User;
 import ru.practicum.shareit.user.mapper.UserMapper;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;

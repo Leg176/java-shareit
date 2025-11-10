@@ -2,9 +2,10 @@ package ru.practicum.shareit.request.mapper;
 
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.item.entity.Item;
-import ru.practicum.shareit.request.entity.ItemRequest;
 import ru.practicum.shareit.request.dto.*;
+import ru.practicum.shareit.request.entity.ItemRequest;
 import ru.practicum.shareit.user.entity.User;
+
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;

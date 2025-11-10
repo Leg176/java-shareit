@@ -41,7 +41,7 @@ public class UserController {
                                          @Valid @RequestBody @NotNull UpdateUserDto request) {
         return userClient.updateUser(request, userId);
     }
-    
+
     @DeleteMapping("/{id}")
     ResponseEntity<Object> deleteUser(@PathVariable("id") Long id) {
         return userClient.deleteUser(id);

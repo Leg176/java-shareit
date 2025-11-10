@@ -12,6 +12,7 @@ import ru.practicum.shareit.request.entity.ItemRequest;
 import ru.practicum.shareit.request.mapper.ItemRequestMapper;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.entity.User;
+
 import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;

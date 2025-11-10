@@ -7,6 +7,7 @@ import ru.practicum.shareit.item.dto.NewCommentRequest;
 import ru.practicum.shareit.item.entity.Comment;
 import ru.practicum.shareit.item.entity.Item;
 import ru.practicum.shareit.user.entity.User;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -31,7 +32,7 @@ public class CommentMapper {
         if (comment == null) {
             throw new BadRequestException("Comment не может быть равен null");
         }
-        return  CommentDto.builder()
+        return CommentDto.builder()
                 .id(comment.getId())
                 .text(comment.getText())
                 .authorName(comment.getAuthor().getName())
