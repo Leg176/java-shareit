@@ -4,11 +4,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
-/**
- * TODO Sprint add-controllers.
- */
 @Getter
 @Setter
 @Builder
@@ -23,5 +21,5 @@ public class ItemDto {
     private Boolean available;
     private String owner;
     private Long requestId;
-    private List<CommentDto> comments;
+    private List<CommentDto> comments = new ArrayList<>();
 }
