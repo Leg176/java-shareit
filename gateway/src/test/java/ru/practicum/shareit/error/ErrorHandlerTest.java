@@ -9,7 +9,6 @@ import ru.practicum.shareit.error.exceptions.BadRequestException;
 import ru.practicum.shareit.error.exceptions.ForbiddenException;
 import ru.practicum.shareit.error.exceptions.NotFoundException;
 import ru.practicum.shareit.error.exceptions.ValidationException;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)

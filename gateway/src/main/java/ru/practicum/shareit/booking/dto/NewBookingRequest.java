@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class NewBookingRequest {
-    @NotNull
+    @NotNull(message = "не должно равняться null")
     @Min(value = 1, message = "Id не может быть меньше 1.")
     private Long itemId;
     @NotNull
