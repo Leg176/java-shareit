@@ -21,5 +21,6 @@ public class ItemDto {
     private Boolean available;
     private String owner;
     private Long requestId;
+    @Builder.Default
     private List<CommentDto> comments = new ArrayList<>();
 }
