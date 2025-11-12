@@ -38,7 +38,7 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<Object> searchFilms(@RequestParam String text) {
+    public ResponseEntity<Object> searchItems(@RequestParam String text) {
         return itemClient.searchItems(text);
     }
 

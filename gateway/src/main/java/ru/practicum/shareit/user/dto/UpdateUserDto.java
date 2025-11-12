@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UpdateUserDto {
-
     private Long id;
     private String name;
     @Email(message = "Неверный формат электронной почты")
