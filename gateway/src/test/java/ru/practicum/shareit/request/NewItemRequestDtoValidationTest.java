@@ -36,7 +36,7 @@ class NewItemRequestDtoValidationTest {
 
         Set<ConstraintViolation<NewItemRequestDto>> violations = validator.validate(dto);
         assertThat(violations).hasSize(1);
-        assertThat(violations.iterator().next().getMessage()).isEqualTo("не должно быть пустым");
+        assertThat(violations.iterator().next().getMessage()).isEqualTo("Описание не может быть пустым");
     }
 
     @Test
@@ -47,7 +47,7 @@ class NewItemRequestDtoValidationTest {
 
         Set<ConstraintViolation<NewItemRequestDto>> violations = validator.validate(dto);
         assertThat(violations).hasSize(1);
-        assertThat(violations.iterator().next().getMessage()).isEqualTo("не должно быть пустым");
+        assertThat(violations.iterator().next().getMessage()).isEqualTo("Описание не может быть пустым");
     }
 
     @Test
@@ -83,6 +83,6 @@ class NewItemRequestDtoValidationTest {
 
         ConstraintViolation<NewItemRequestDto> violation = violations.iterator().next();
         assertThat(violation.getPropertyPath().toString()).isEqualTo("description");
-        assertThat(violation.getMessage()).isEqualTo("не должно быть пустым");
+        assertThat(violation.getMessage()).isEqualTo("Описание не может быть пустым");
     }
 }

@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class NewItemRequestDto {
-    @NotBlank
+    @NotBlank(message = "Описание не может быть пустым")
     @Size(max = 200, message = "Описание не должно превышать 200 символов")
     private String description;
 }

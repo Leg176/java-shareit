@@ -132,7 +132,7 @@ class NewItemDtoValidationTest {
 
         ConstraintViolation<NewItemDto> violation = violations.iterator().next();
         assertThat(violation.getPropertyPath().toString()).isEqualTo("description");
-        assertThat(violation.getMessage()).isEqualTo("не должно быть пустым");
+        assertThat(violation.getMessage()).isEqualTo("Описание не может быть пустым");
     }
 
     @Test
@@ -148,7 +148,7 @@ class NewItemDtoValidationTest {
 
         ConstraintViolation<NewItemDto> violation = violations.iterator().next();
         assertThat(violation.getPropertyPath().toString()).isEqualTo("description");
-        assertThat(violation.getMessage()).isEqualTo("не должно быть пустым");
+        assertThat(violation.getMessage()).isEqualTo("Описание не может быть пустым");
     }
 
     @Test
@@ -192,7 +192,7 @@ class NewItemDtoValidationTest {
 
         ConstraintViolation<NewItemDto> violation = violations.iterator().next();
         assertThat(violation.getPropertyPath().toString()).isEqualTo("available");
-        assertThat(violation.getMessage()).isEqualTo("не должно равняться null");
+        assertThat(violation.getMessage()).isEqualTo("Статус доступности не может быть пустым");
     }
 
     @Test
@@ -256,6 +256,6 @@ class NewItemDtoValidationTest {
 
         ConstraintViolation<NewItemDto> violation = violations.iterator().next();
         assertThat(violation.getPropertyPath().toString()).isEqualTo("description");
-        assertThat(violation.getMessage()).isEqualTo("не должно быть пустым");
+        assertThat(violation.getMessage()).isEqualTo("Описание не может быть пустым");
     }
 }

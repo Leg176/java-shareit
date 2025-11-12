@@ -38,7 +38,7 @@ class NewUserDtoValidationTest {
 
         Set<ConstraintViolation<NewUserDto>> violations = validator.validate(dto);
         assertThat(violations).hasSize(1);
-        assertThat(violations.iterator().next().getMessage()).isEqualTo("не должно быть пустым");
+        assertThat(violations.iterator().next().getMessage()).isEqualTo("Имя не может быть пустым");
     }
 
     @Test
@@ -66,7 +66,7 @@ class NewUserDtoValidationTest {
 
         ConstraintViolation<NewUserDto> violation = violations.iterator().next();
         assertThat(violation.getPropertyPath().toString()).isEqualTo("email");
-        assertThat(violation.getMessage()).isEqualTo("не должно быть пустым");
+        assertThat(violation.getMessage()).isEqualTo("Email не может быть пустым");
     }
 
     @Test
