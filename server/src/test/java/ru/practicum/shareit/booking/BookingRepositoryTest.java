@@ -156,8 +156,8 @@ class BookingRepositoryTest {
         LocalDateTime now = LocalDateTime.now();
         Collection<BookingStatus> statuses = List.of(BookingStatus.APPROVED);
 
-        Collection<Booking> result = bookingRepository.
-                findByBookerIdAndStartLessThanEqualAndEndGreaterThanEqualAndStatusInOrderByStartDesc(
+        Collection<Booking> result = bookingRepository
+                .findByBookerIdAndStartLessThanEqualAndEndGreaterThanEqualAndStatusInOrderByStartDesc(
                 booker2.getId(), now, now, statuses);
 
         assertEquals(1, result.size());
@@ -193,8 +193,8 @@ class BookingRepositoryTest {
 
     @Test
     void findByBookerIdAndStatusOrderByStartDesc_returnsBookingsByStatus() {
-        Collection<Booking> result = bookingRepository.findByBookerIdAndStatusOrderByStartDesc(
-                booker1.getId(), BookingStatus.WAITING);
+        Collection<Booking> result = bookingRepository
+                .findByBookerIdAndStatusOrderByStartDesc(booker1.getId(), BookingStatus.WAITING);
 
         assertEquals(1, result.size());
         assertEquals(booking3.getId(), result.iterator().next().getId());
@@ -211,8 +211,8 @@ class BookingRepositoryTest {
 
     @Test
     void findByItemOwnerIdAndStatusOrderByStartDesc_returnsOwnerBookingsByStatus() {
-        Collection<Booking> result = bookingRepository.findByItemOwnerIdAndStatusOrderByStartDesc(
-                owner1.getId(), BookingStatus.WAITING);
+        Collection<Booking> result = bookingRepository
+                .findByItemOwnerIdAndStatusOrderByStartDesc(owner1.getId(), BookingStatus.WAITING);
 
         assertEquals(1, result.size());
         assertEquals(booking3.getId(), result.iterator().next().getId());
@@ -296,12 +296,13 @@ class BookingRepositoryTest {
     @Test
     void findByBookerIdAndStatusIn_returnsBookingsByMultipleStatuses() {
         Collection<BookingStatus> statuses = List.of(BookingStatus.WAITING, BookingStatus.REJECTED);
-        Collection<Booking> result = bookingRepository.
-                findByBookerIdAndStatusInOrderByStartDesc(booker2.getId(), statuses);
+        Collection<Booking> result = bookingRepository
+                .findByBookerIdAndStatusInOrderByStartDesc(booker2.getId(), statuses);
 
         assertEquals(1, result.size());
         assertEquals(booking4.getId(), result.iterator().next().getId());
     }
+
     @Test
     void existsByBookerIdAndItemIdAndEndBefore_returnsTrueWhenExists() {
         boolean result = bookingRepository.existsByBookerIdAndItemIdAndEndBefore(
@@ -317,5 +318,4 @@ class BookingRepositoryTest {
 
         assertFalse(result);
     }
-
 }
