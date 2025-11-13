@@ -205,8 +205,8 @@ class BookingRepositoryTest {
         Collection<Booking> result = bookingRepository.findByItemOwnerIdOrderByStartDesc(owner1.getId());
 
         assertEquals(4, result.size());
-        assertTrue(result.stream().allMatch(booking -> booking.getItem().getOwner().getId().
-                equals(owner1.getId())));
+        assertTrue(result.stream().allMatch(booking -> booking.getItem().getOwner().getId()
+                        .equals(owner1.getId())));
     }
 
     @Test
