@@ -42,16 +42,14 @@ class BookingControllerTest {
     void getBookings_ShouldCallClientWithConvertedState() {
         Long userId = 1L;
         String stateParam = "current";
-        Integer from = 5;
-        Integer size = 20;
 
-        when(bookingClient.getBookings(userId, BookingState.CURRENT, from, size))
+        when(bookingClient.getBookings(userId, BookingState.CURRENT))
                 .thenReturn(ResponseEntity.ok().build());
 
-        ResponseEntity<Object> result = bookingController.getBookings(userId, stateParam, from, size);
+        ResponseEntity<Object> result = bookingController.getBookings(userId, stateParam);
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
-        verify(bookingClient).getBookings(userId, BookingState.CURRENT, from, size);
+        verify(bookingClient).getBookings(userId, BookingState.CURRENT);
     }
 
     @Test
@@ -62,14 +60,14 @@ class BookingControllerTest {
         Integer size = 10;
         String mockResponse = "[{\"id\":1,\"status\":\"APPROVED\"},{\"id\":2,\"status\":\"WAITING\"}]";
 
-        when(bookingClient.getBookingsOwner(ownerId, BookingState.ALL, from, size))
+        when(bookingClient.getBookingsOwner(ownerId, BookingState.ALL))
                 .thenReturn(ResponseEntity.ok(mockResponse));
 
-        ResponseEntity<Object> result = bookingController.findAllBookingForOwner(ownerId, stateParam, from, size);
+        ResponseEntity<Object> result = bookingController.findAllBookingForOwner(ownerId, stateParam);
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat((String) result.getBody()).isEqualTo(mockResponse);
-        verify(bookingClient).getBookingsOwner(ownerId, BookingState.ALL, from, size);
+        verify(bookingClient).getBookingsOwner(ownerId, BookingState.ALL);
     }
 
     @Test

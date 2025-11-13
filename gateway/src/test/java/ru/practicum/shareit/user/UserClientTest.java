@@ -17,6 +17,7 @@ import ru.practicum.shareit.user.dto.UpdateUserDto;
 import java.util.function.Supplier;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
+import static ru.practicum.shareit.user.UserClient.API_PREFIX;
 
 @ExtendWith(MockitoExtension.class)
 class UserClientTest {
@@ -29,7 +30,6 @@ class UserClientTest {
 
     private UserClient userClient;
     private static final String BASE_URL = "http://test-server";
-    private static final String API_PREFIX = "/users";
 
     @BeforeEach
     void setUp() {

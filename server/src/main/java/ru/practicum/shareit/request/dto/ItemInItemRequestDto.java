@@ -10,7 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ItemInItemRequestDto {
-    Long id;
-    String name;
-    Long ownerId;
+    private Long id;
+    private String name;
+    private Long ownerId;
 }

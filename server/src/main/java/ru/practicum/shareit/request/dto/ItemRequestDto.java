@@ -26,5 +26,5 @@ public class ItemRequestDto {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime created;
     @Builder.Default
-    List<ItemInItemRequestDto> items = new ArrayList<>();
+    private List<ItemInItemRequestDto> items = new ArrayList<>();
 }

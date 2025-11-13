@@ -1,6 +1,5 @@
 package ru.practicum.shareit.error;
 
-import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -9,14 +8,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.bind.annotation.GetMapping;
 import ru.practicum.shareit.error.exceptions.BadRequestException;
 import ru.practicum.shareit.error.exceptions.NotFoundException;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = ErrorHandlerIntegrationTest.TestController.class)
-@SpringJUnitWebConfig({ErrorHandler.class, ErrorHandlerIntegrationTest.TestController.class})
-class ErrorHandlerIntegrationTest {
-
+@WebMvcTest(controllers = ErrorHandlerMockMvcTest.TestController.class)
+@SpringJUnitWebConfig({ErrorHandler.class, ErrorHandlerMockMvcTest.TestController.class})
+class ErrorHandlerMockMvcTest {
     @Autowired
     private MockMvc mockMvc;
 
@@ -34,7 +33,6 @@ class ErrorHandlerIntegrationTest {
                 .andExpect(jsonPath("$.error").value("Bad request exception"));
     }
 
-    // Test controller для имитации исключений
     @org.springframework.web.bind.annotation.RestController
     static class TestController {
 
@@ -46,11 +44,6 @@ class ErrorHandlerIntegrationTest {
         @GetMapping("/test/bad-request")
         public void throwBadRequest() {
             throw new BadRequestException("Bad request exception");
-        }
-
-        @GetMapping("/test/constraint-violation")
-        public void throwConstraintViolation() {
-            throw new ConstraintViolationException("Constraint violation", null);
         }
     }
 }

@@ -74,16 +74,15 @@ public class ItemServiceImpl implements ItemService {
     @Transactional
     public ItemDto addNewItem(NewItemDto request, Long ownerId) {
         User owner = findByIdUser(ownerId);
+        Item item;
         if (request.getRequestId() != null) {
             ItemRequest itemRequest = findByIdRequest(request.getRequestId());
-            Item item = itemMapper.mapToItem(request, owner, itemRequest);
-            itemRepository.save(item);
-            return itemMapper.mapToItemDto(item);
+            item = itemMapper.mapToItem(request, owner, itemRequest);
         } else {
-            Item item = itemMapper.mapToItem(request, owner);
-            itemRepository.save(item);
-            return itemMapper.mapToItemDto(item);
+            item = itemMapper.mapToItem(request, owner);
         }
+        itemRepository.save(item);
+        return itemMapper.mapToItemDto(item);
     }
 
     @Override

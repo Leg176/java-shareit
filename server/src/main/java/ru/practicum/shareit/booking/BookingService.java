@@ -6,9 +6,9 @@ import ru.practicum.shareit.booking.dto.NewBookingRequest;
 import java.util.Collection;
 
 public interface BookingService {
-    Collection<BookingDto> getBookingsUser(Long userId, String state, Integer from, Integer size);
+    Collection<BookingDto> getBookingsUser(Long userId, String state);
 
-    Collection<BookingDto> getBookingsOwner(Long ownerId, String state, Integer from, Integer size);
+    Collection<BookingDto> getBookingsOwner(Long ownerId, String state);
 
     BookingDto addNewBooking(NewBookingRequest request, Long bookerId);
 

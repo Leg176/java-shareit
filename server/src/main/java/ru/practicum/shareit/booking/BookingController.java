@@ -21,18 +21,14 @@ public class BookingController {
 
     @GetMapping
     public Collection<BookingDto> findBookingsUser(@RequestHeader(X_SHARER_USER_ID) Long userId,
-                                                   @RequestParam String state,
-                                                   @RequestParam Integer from,
-                                                   @RequestParam Integer size) {
-        return bookingService.getBookingsUser(userId, state, from, size);
+                                                   @RequestParam String state) {
+        return bookingService.getBookingsUser(userId, state);
     }
 
     @GetMapping("/owner")
     public Collection<BookingDto> findAllBookingForOwner(@RequestHeader(X_SHARER_USER_ID) Long ownerId,
-                                                         @RequestParam String state,
-                                                         @RequestParam Integer from,
-                                                         @RequestParam Integer size) {
-        return bookingService.getBookingsOwner(ownerId, state, from, size);
+                                                         @RequestParam String state) {
+        return bookingService.getBookingsOwner(ownerId, state);
     }
 
     @GetMapping("/{bookingId}")

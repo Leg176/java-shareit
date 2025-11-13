@@ -19,6 +19,8 @@ import java.util.Map;
 import java.util.function.Supplier;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
+import static ru.practicum.shareit.booking.BookingClient.API_PREFIX;
+import static ru.practicum.shareit.constants.HttpHeaders.X_SHARER_USER_ID;
 
 @ExtendWith(MockitoExtension.class)
 class BookingClientTest {
@@ -31,8 +33,6 @@ class BookingClientTest {
 
     private BookingClient bookingClient;
     private static final String BASE_URL = "http://test-server";
-    private static final String API_PREFIX = "/bookings";
-    private static final String X_SHARER_USER_ID = "X-Sharer-User-Id";
 
     @BeforeEach
     void setUp() {
@@ -68,18 +68,16 @@ class BookingClientTest {
     void getBookings_ShouldCallGetWithParameters() {
         Long userId = 1L;
         BookingState state = BookingState.ALL;
-        Integer from = 0;
-        Integer size = 10;
 
-        bookingClient.getBookings(userId, state, from, size);
+        bookingClient.getBookings(userId, state);
 
         verify(restTemplate).exchange(
-                eq("?state={state}&from={from}&size={size}"),
+                eq("?state={state}"),
                 eq(HttpMethod.GET),
                 argThat((HttpEntity<?> entity) ->
                         entity.getHeaders().getFirst(X_SHARER_USER_ID).equals("1")),
                 eq(Object.class),
-                eq(Map.of("state", "ALL", "from", 0, "size", 10))
+                eq(Map.of("state", "ALL"))
         );
     }
 
@@ -103,19 +101,17 @@ class BookingClientTest {
     void getBookingsOwner_ShouldCallGetWithParametersAndUserIdHeader() {
         Long ownerId = 1L;
         BookingState state = BookingState.CURRENT;
-        Integer from = 0;
-        Integer size = 10;
 
-        bookingClient.getBookingsOwner(ownerId, state, from, size);
+        bookingClient.getBookingsOwner(ownerId, state);
 
         verify(restTemplate).exchange(
-                eq("/owner?state={state}&from={from}&size={size}"), // путь с параметрами
+                eq("/owner?state={state}"),
                 eq(HttpMethod.GET),
                 argThat((HttpEntity<?> entity) ->
                         entity.getHeaders().containsKey(X_SHARER_USER_ID) &&
                                 entity.getHeaders().getFirst(X_SHARER_USER_ID).equals("1")),
                 eq(Object.class),
-                eq(Map.of("state", "CURRENT", "from", 0, "size", 10)) // параметры
+                eq(Map.of("state", "CURRENT"))
         );
     }
 

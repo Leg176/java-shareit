@@ -10,6 +10,6 @@ import lombok.*;
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class BookingItemDto {
-    Long id;
-    String name;
+    private Long id;
+    private String name;
 }

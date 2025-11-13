@@ -15,10 +15,10 @@ import java.util.Map;
 
 @Service
 public class BookingClient extends BaseClient {
-    private static final String API_PREFIX = "/bookings";
+    public static final String API_PREFIX = "/bookings";
 
     @Autowired
-    public BookingClient(@Value("${shareit-server.url}") String serverUrl, RestTemplateBuilder builder) {
+    public BookingClient(@Value("${shareit-server.url:http://localhost:9090}") String serverUrl, RestTemplateBuilder builder) {
         super(
                 builder
                         .uriTemplateHandler(new DefaultUriBuilderFactory(serverUrl + API_PREFIX))
@@ -27,13 +27,9 @@ public class BookingClient extends BaseClient {
         );
     }
 
-    public ResponseEntity<Object> getBookings(long userId, BookingState state, Integer from, Integer size) {
-        Map<String, Object> parameters = Map.of(
-                "state", state.name(),
-                "from", from,
-                "size", size
-        );
-        return get("?state={state}&from={from}&size={size}", userId, parameters);
+    public ResponseEntity<Object> getBookings(long userId, BookingState state) {
+        Map<String, Object> parameters = Map.of("state", state.name());
+        return get("?state={state}", userId, parameters);
     }
 
     public ResponseEntity<Object> bookItem(long userId, NewBookingRequest requestDto) {
@@ -44,13 +40,9 @@ public class BookingClient extends BaseClient {
         return get("/" + bookingId, userId);
     }
 
-    public ResponseEntity<Object> getBookingsOwner(Long ownerId, BookingState state, Integer from, Integer size) {
-        Map<String, Object> parameters = Map.of(
-                "state", state.name(),
-                "from", from,
-                "size", size
-        );
-        return get("/owner?state={state}&from={from}&size={size}", ownerId, parameters);
+    public ResponseEntity<Object> getBookingsOwner(Long ownerId, BookingState state) {
+        Map<String, Object> parameters = Map.of("state", state.name());
+        return get("/owner?state={state}", ownerId, parameters);
     }
 
     public ResponseEntity<Object> updateBookingStatus(Long bookingId, Long ownerId, Boolean approved) {

@@ -35,7 +35,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional(readOnly = true)
-    public Collection<BookingDto> getBookingsUser(Long userId, String state, Integer from, Integer size) {
+    public Collection<BookingDto> getBookingsUser(Long userId, String state) {
         if (!userRepository.existsById(userId)) {
             throw new NotFoundException("Пользователь с id: " + userId + " в базе отсутствует");
         }
@@ -60,15 +60,13 @@ public class BookingServiceImpl implements BookingService {
                     Arrays.asList(BookingStatus.REJECTED, BookingStatus.CANCELED));
         };
         return bookings.stream()
-                .skip(from)
-                .limit(size)
                 .map(bookingMapper::mapToBookingDto)
                 .collect(Collectors.toList());
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Collection<BookingDto> getBookingsOwner(Long ownerId, String state, Integer from, Integer size) {
+    public Collection<BookingDto> getBookingsOwner(Long ownerId, String state) {
         if (!userRepository.existsById(ownerId)) {
             throw new NotFoundException("Пользователь с id: " + ownerId + " в базе отсутствует");
         }
@@ -93,8 +91,6 @@ public class BookingServiceImpl implements BookingService {
                     Arrays.asList(BookingStatus.REJECTED, BookingStatus.CANCELED));
         };
         return bookings.stream()
-                .skip(from)
-                .limit(size)
                 .map(bookingMapper::mapToBookingDto)
                 .collect(Collectors.toList());
     }
@@ -124,7 +120,7 @@ public class BookingServiceImpl implements BookingService {
         }
         validateStatus(booking);
         BookingStatus status = approved ? BookingStatus.APPROVED : BookingStatus.REJECTED;
-        updateBookingStatus(booking, status);
+        booking.setStatus(status);
         bookingRepository.save(booking);
         return bookingMapper.mapToBookingDto(booking);
     }
@@ -202,13 +198,6 @@ public class BookingServiceImpl implements BookingService {
             throw new NotFoundException("Бронирование с id: " + id + " в базе отсутствует");
         }
         return optBooking.get();
-    }
-
-    private void updateBookingStatus(Booking booking, BookingStatus status) {
-        if (booking == null) {
-            throw new IllegalArgumentException("Бронирование не может быть пустым");
-        }
-        booking.setStatus(status);
     }
 }
 

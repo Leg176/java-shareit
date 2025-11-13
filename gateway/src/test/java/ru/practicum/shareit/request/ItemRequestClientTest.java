@@ -18,6 +18,8 @@ import java.util.function.Supplier;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static ru.practicum.shareit.constants.HttpHeaders.X_SHARER_USER_ID;
+import static ru.practicum.shareit.request.ItemRequestClient.API_PREFIX;
 
 @ExtendWith(MockitoExtension.class)
 class ItemRequestClientTest {
@@ -30,8 +32,6 @@ class ItemRequestClientTest {
 
     private ItemRequestClient itemRequestClient;
     private static final String BASE_URL = "http://test-server";
-    private static final String API_PREFIX = "/requests";
-    private static final String X_SHARER_USER_ID = "X-Sharer-User-Id";
 
     @BeforeEach
     void setUp() {
