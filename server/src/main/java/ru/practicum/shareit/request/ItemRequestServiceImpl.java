@@ -1,0 +1,94 @@
+package ru.practicum.shareit.request;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import ru.practicum.shareit.error.exceptions.NotFoundException;
+import ru.practicum.shareit.error.exceptions.ValidationException;
+import ru.practicum.shareit.request.dto.ItemRequestDto;
+import ru.practicum.shareit.request.dto.ItemRequestWithoutItemsDto;
+import ru.practicum.shareit.request.dto.NewItemRequestDto;
+import ru.practicum.shareit.request.dto.UpdateItemRequestDto;
+import ru.practicum.shareit.request.entity.ItemRequest;
+import ru.practicum.shareit.request.mapper.ItemRequestMapper;
+import ru.practicum.shareit.user.UserRepository;
+import ru.practicum.shareit.user.entity.User;
+
+import java.util.Collection;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+@Service
+@RequiredArgsConstructor
+public class ItemRequestServiceImpl implements ItemRequestService {
+    private final ItemRequestRepository itemRequestRepository;
+    private final UserRepository userRepository;
+    private final ItemRequestMapper itemRequestMapper;
+
+    @Override
+    public Collection<ItemRequestDto> getRequestsByOwner(Long ownerId) {
+        return itemRequestRepository.findUserRequestsWithItems(ownerId).stream()
+                .map(itemRequestMapper::mapToRequestDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Collection<ItemRequestWithoutItemsDto> getRequestsByNotOwner(Long ownerId) {
+        return itemRequestRepository.findByRequestorIdNot(ownerId).stream()
+                .map(itemRequestMapper::mapToRequestDtoNotItems)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public ItemRequestDto addNewRequest(NewItemRequestDto newRequest, Long ownerId) {
+        User user = findByIdUser(ownerId);
+        ItemRequest request = itemRequestMapper.mapToRequest(newRequest, user);
+        itemRequestRepository.save(request);
+        return itemRequestMapper.mapToRequestDto(request);
+    }
+
+    @Override
+    public ItemRequestDto updateRequest(UpdateItemRequestDto updateRequest, Long ownerId) {
+        ItemRequest request = findByIdItemRequest(updateRequest.getId());
+        findByIdUser(ownerId);
+        validationOwner(request, ownerId);
+        itemRequestMapper.updateRequestFields(request, updateRequest);
+        itemRequestRepository.save(request);
+        return itemRequestMapper.mapToRequestDto(request);
+    }
+
+    @Override
+    public ItemRequestDto getRequestById(Long id) {
+        ItemRequest request = findByIdItemRequest(id);
+        return itemRequestMapper.mapToRequestDto(request);
+    }
+
+    @Override
+    public void deleteRequest(Long id, Long ownerId) {
+        ItemRequest request = findByIdItemRequest(id);
+        findByIdUser(ownerId);
+        validationOwner(request, ownerId);
+        itemRequestRepository.delete(request);
+    }
+
+    private User findByIdUser(Long id) {
+        Optional<User> optUser = userRepository.findById(id);
+        if (optUser.isEmpty()) {
+            throw new NotFoundException("Пользователь с id: " + id + " в базе отсутствует");
+        }
+        return optUser.get();
+    }
+
+    private ItemRequest findByIdItemRequest(Long id) {
+        Optional<ItemRequest> optRequest = itemRequestRepository.findByIdWithItems(id);
+        if (optRequest.isEmpty()) {
+            throw new NotFoundException("Запрос с id: " + id + " в базе отсутствует");
+        }
+        return optRequest.get();
+    }
+
+    private void validationOwner(ItemRequest request, Long ownerId) {
+        if (!request.getRequestor().getId().equals(ownerId)) {
+            throw new ValidationException("Вы не являетесь владельцем, доступ запрещён!");
+        }
+    }
+}
